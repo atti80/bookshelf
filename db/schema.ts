@@ -134,7 +134,7 @@ export const genreToArticleRelations = relations(GenreToArticle, ({ one }) => ({
     fields: [GenreToArticle.articleId],
     references: [Article.id],
   }),
-  genres: one(Genre, {
+  genre: one(Genre, {
     fields: [GenreToArticle.genreId],
     references: [Genre.id],
   }),
@@ -149,7 +149,7 @@ export const labelToArticleRelations = relations(LabelToArticle, ({ one }) => ({
     fields: [LabelToArticle.articleId],
     references: [Article.id],
   }),
-  labels: one(Label, {
+  label: one(Label, {
     fields: [LabelToArticle.labelId],
     references: [Label.id],
   }),
