@@ -1,0 +1,1 @@
+ALTER TABLE "articleTable" ADD COLUMN "image" text;
