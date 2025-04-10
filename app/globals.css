@@ -16,6 +16,9 @@
 
 @layer base {
   h1 {
+    @apply text-6xl font-medium;
+  }
+  h2 {
     @apply text-4xl font-medium;
   }
 }
