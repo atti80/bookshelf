@@ -41,3 +41,35 @@ export const getArticles = async () => {
     orderBy: [desc(Article.publishedAt)],
   });
 };
+
+export const getArticle = async (id: number) => {
+  return await db.query.Article.findFirst({
+    where: eq(Article.id, id),
+    with: {
+      author: {
+        columns: {
+          name: true,
+        },
+      },
+      genres: {
+        with: {
+          genre: {
+            columns: {
+              name: true,
+            },
+          },
+        },
+      },
+      labels: {
+        with: {
+          label: {
+            columns: {
+              name: true,
+            },
+          },
+        },
+      },
+      likes: {},
+    },
+  });
+};
