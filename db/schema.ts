@@ -23,14 +23,14 @@ export const statusType = pgEnum("notificationType", [
 
 export const User = pgTable("userTable", {
   id: serial().primaryKey(),
-  username: text().notNull().unique(),
   email: text().notNull().unique(),
-  clerkId: text().notNull().unique(),
+  password: text().notNull().unique(),
+  salt: text().notNull().unique(),
+  name: text(),
+  location: text(),
+  bio: text(),
   isActive: boolean().default(true),
   isAdmin: boolean().default(false),
-  name: text(),
-  bio: text(),
-  location: text(),
   lastLogin: timestamp(),
   ...timestamps,
 });
