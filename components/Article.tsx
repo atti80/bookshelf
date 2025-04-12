@@ -25,7 +25,7 @@ const Article = ({
   }, []);
 
   return (
-    <div className="bg-background my-4 p-12 flex flex-col items-center gap-8 rounded-md">
+    <div className="bg-background p-12 flex flex-col items-center gap-8 rounded-md">
       <div className="flex flex-col w-full">
         <Genres genres={article.genres}></Genres>
         <h2 className="mt-4">{article.title}</h2>

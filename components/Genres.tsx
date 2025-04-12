@@ -9,7 +9,7 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
       {genres.map((genre) => (
         <div
           key={genre.genreId}
-          className="bg-primary rounded-md px-4 py-1 text-sm text-background mr-2"
+          className="bg-primary-light rounded-md px-4 py-1 text-sm text-background mr-2"
         >
           {genre.genre.name}
         </div>
