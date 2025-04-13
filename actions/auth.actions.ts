@@ -22,10 +22,10 @@ export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
 
   const user = await db.query.User.findFirst({
     columns: {
-      password: true,
-      salt: true,
       id: true,
       email: true,
+      password: true,
+      salt: true,
       isAdmin: true,
     },
     where: eq(User.email, data.email),
@@ -41,7 +41,7 @@ export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
     salt: user.salt,
   });
 
-  if (!isCorrectPassword) return "Unable to log you in";
+  if (!isCorrectPassword) return "Incorrect password";
 
   await createUserSession({ id: user.id, isAdmin: user.isAdmin ?? false });
 
