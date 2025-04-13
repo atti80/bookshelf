@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/db/db";
 import { eq } from "drizzle-orm";
 import { User } from "@/db/schema";
+import { cookies } from "next/headers";
 
 type FullUser = Exclude<
   Awaited<ReturnType<typeof getUserFromDb>>,
@@ -35,7 +36,7 @@ async function _getCurrentUser({
   withFullUser = false,
   redirectIfNotFound = false,
 } = {}) {
-  const user = await getUserFromSession();
+  const user = await getUserFromSession(await cookies());
 
   if (user == null) {
     if (redirectIfNotFound) return redirect("/sign-in");

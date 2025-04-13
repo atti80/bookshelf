@@ -1,16 +1,6 @@
-import { createClient } from "redis";
+import { Redis } from "@upstash/redis";
 
-const port = parseInt(process.env.REDIS_PORT ?? "0");
-
-export const client = createClient({
-  username: process.env.REDIS_USER,
-  password: process.env.REDIS_PSWD,
-  socket: {
-    host: process.env.REDIS_HOST,
-    port: port,
-  },
+export const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
-
-client.on("error", (err) => console.log("Redis Client Error", err));
-
-await client.connect();

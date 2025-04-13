@@ -8,11 +8,17 @@ import { User } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import {
   comparePasswords,
+  generateRandomString,
   generateSalt,
   hashPassword,
 } from "@/lib/passwordHasher";
-import { cookies } from "next/headers";
-import { createUserSession, removeUserFromSession } from "@/lib/session";
+import {
+  removeUserFromSession,
+  SESSION_EXPIRATION_SECONDS,
+  setCookie,
+  UserSession,
+} from "@/lib/session";
+import { redis } from "@/lib/redis";
 // import { getOAuthClient } from "../core/oauth/base";
 
 export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
@@ -32,7 +38,7 @@ export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
   });
 
   if (user == null || user.password == null || user.salt == null) {
-    return "Unable to log you in";
+    return "User not found";
   }
 
   const isCorrectPassword = await comparePasswords({
@@ -89,6 +95,16 @@ export async function signUp(unsafeData: z.infer<typeof signUpSchema>) {
 export async function logOut() {
   await removeUserFromSession();
   redirect("/");
+}
+
+async function createUserSession(user: UserSession) {
+  const sessionId = generateRandomString(512);
+
+  await redis.set(`session:${sessionId}`, user, {
+    ex: SESSION_EXPIRATION_SECONDS,
+  });
+
+  setCookie(sessionId);
 }
 
 // export async function oAuthSignIn(provider: OAuthProvider) {

@@ -21,12 +21,14 @@ export async function comparePasswords({
 }) {
   const inputHashedPassword = await hashPassword(password, salt);
 
-  if (inputHashedPassword.length !== hashedPassword.length) return false;
-
   return crypto.timingSafeEqual(
     Buffer.from(inputHashedPassword, "hex"),
     Buffer.from(hashedPassword, "hex")
   );
+}
+
+export function generateRandomString(size: number) {
+  return crypto.randomBytes(size).toString("hex").normalize();
 }
 
 export function generateSalt() {
