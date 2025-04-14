@@ -22,6 +22,13 @@
       "when": 1744124779942,
       "tag": "0002_round_harrier",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1744479408785,
+      "tag": "0003_hard_talon",
+      "breakpoints": true
     }
   ]
 }
