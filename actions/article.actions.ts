@@ -1,12 +1,24 @@
 "use server";
 
 import { db } from "@/db/db";
-import { Article } from "@/db/schema";
-import { asc, desc, eq } from "drizzle-orm";
+import { Article, Genre, GenreToArticle } from "@/db/schema";
+import { and, desc, eq, inArray } from "drizzle-orm";
 
-export const getArticles = async () => {
+export const getArticles = async (genre: string | null) => {
   return await db.query.Article.findMany({
-    where: eq(Article.status, "published"),
+    where: and(
+      eq(Article.status, "published"),
+      genre && genre !== "all"
+        ? inArray(
+            Article.id,
+            db
+              .select({ id: GenreToArticle.articleId })
+              .from(GenreToArticle)
+              .innerJoin(Genre, eq(GenreToArticle.genreId, Genre.id))
+              .where(eq(Genre.name, genre))
+          )
+        : undefined
+    ),
     columns: {
       status: false,
       createdAt: false,
@@ -37,6 +49,7 @@ export const getArticles = async () => {
         },
       },
       likes: {},
+      comments: {},
     },
     orderBy: [desc(Article.publishedAt)],
   });

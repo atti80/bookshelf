@@ -21,7 +21,7 @@ const UserCard = async () => {
       <CardHeader>
         <CardTitle>{user ? `${user.name}` : "Guest"}</CardTitle>
         <CardDescription>
-          {user && `Role: ${user.isAdmin ? "admin" : "reader"}`}
+          {user && `${user.isAdmin ? "admin" : "reader"}`}
         </CardDescription>
         <Separator></Separator>
       </CardHeader>

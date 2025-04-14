@@ -5,6 +5,12 @@ import Image from "next/image";
 import Genres from "./Genres";
 import ReadMore from "./ReadMore";
 import { useEffect, useState } from "react";
+import {
+  HeartIcon,
+  LogInIcon,
+  MessageCircleIcon,
+  SendIcon,
+} from "lucide-react";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 type Article = Articles[number];
@@ -27,7 +33,19 @@ const Article = ({
   return (
     <div className="bg-background p-12 flex flex-col items-center gap-8 rounded-md">
       <div className="flex flex-col w-full">
-        <Genres genres={article.genres}></Genres>
+        <div className="flex items-center justify-between">
+          <Genres genres={article.genres}></Genres>
+          <div className="flex gap-8">
+            <div className="flex gap-2">
+              <HeartIcon className="size-5" />
+              {article.likes.length}
+            </div>
+            <div className="flex gap-2">
+              <MessageCircleIcon className="size-5" />
+              {article.comments.length}
+            </div>
+          </div>
+        </div>
         <h2 className="mt-4">{article.title}</h2>
         <p className="font-light text-gray-400">by {article.author.name}</p>
       </div>
