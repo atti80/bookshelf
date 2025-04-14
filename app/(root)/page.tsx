@@ -11,9 +11,9 @@ if (typeof window !== "undefined") {
 export default async function Home() {
   const user = await getCurrentUser({ withFullUser: true });
   return (
-    <main className="bg-[url(/images/bookshelf.jpg)] bg-gray-500 bg-blend-multiply py-8 min-h-screen min-w-full grid grid-cols-5 justify-items-center items-start">
+    <div className="grid grid-cols-5 justify-items-center items-start">
       <UserCard user={user}></UserCard>
       <ArticleList userId={user?.id ?? null}></ArticleList>
-    </main>
+    </div>
   );
 }

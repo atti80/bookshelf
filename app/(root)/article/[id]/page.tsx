@@ -1,25 +1,14 @@
 import { getArticle } from "@/actions/article.actions";
-import { format } from "date-fns";
-
-type Article = Awaited<ReturnType<typeof getArticle>>;
+import Article from "@/components/Article";
 
 const ArticlePage = async ({ params }: { params: Promise<{ id: number }> }) => {
   const { id } = await params;
-  const article: Article = await getArticle(id);
+  const article = await getArticle(id);
 
   return (
-    <div>
-      {`Article no. ${id}`}
+    <div className="w-4xl mx-auto">
       {article && (
-        <div>
-          <h1>{article.title}</h1>
-          <p>{article.content}</p>
-          <p>Author: {article.author.name}</p>
-          <p>
-            Published at:{" "}
-            {format(new Date(article.publishedAt as Date), "dd MMM yyyy")}
-          </p>
-        </div>
+        <Article article={article} userId={0} fullContent={true}></Article>
       )}
     </div>
   );

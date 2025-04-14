@@ -22,7 +22,6 @@ export const getArticles = async (genre: string | null) => {
     ),
     columns: {
       status: false,
-      createdAt: false,
       updatedAt: false,
     },
     with: {
@@ -59,6 +58,10 @@ export const getArticles = async (genre: string | null) => {
 export const getArticle = async (id: number) => {
   return await db.query.Article.findFirst({
     where: eq(Article.id, id),
+    columns: {
+      status: false,
+      updatedAt: false,
+    },
     with: {
       author: {
         columns: {
@@ -84,6 +87,7 @@ export const getArticle = async (id: number) => {
         },
       },
       likes: {},
+      comments: {},
     },
   });
 };

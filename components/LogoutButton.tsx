@@ -5,7 +5,11 @@ import { logOut } from "@/actions/auth.actions";
 
 export function LogOutButton() {
   return (
-    <Button variant="destructive" onClick={async () => await logOut()}>
+    <Button
+      className="w-full"
+      variant="destructive"
+      onClick={async () => await logOut()}
+    >
       Log Out
     </Button>
   );
