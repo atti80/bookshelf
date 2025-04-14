@@ -1,8 +1,9 @@
 "use server";
 
 import { db } from "@/db/db";
-import { Article, Genre, GenreToArticle } from "@/db/schema";
+import { Article, Genre, GenreToArticle, Like } from "@/db/schema";
 import { and, desc, eq, inArray } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export const getArticles = async (genre: string | null) => {
   return await db.query.Article.findMany({
@@ -85,4 +86,29 @@ export const getArticle = async (id: number) => {
       likes: {},
     },
   });
+};
+
+export const toggleLike = async (userId: number, articleId: number) => {
+  try {
+    const existingLike = await db.query.Like.findFirst({
+      where: and(eq(Like.articleId, articleId), eq(Like.userId, userId)),
+    });
+
+    if (existingLike) {
+      await db
+        .delete(Like)
+        .where(and(eq(Like.articleId, articleId), eq(Like.userId, userId)));
+    } else {
+      await db.insert(Like).values({
+        userId: userId,
+        articleId: articleId,
+      });
+    }
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to toggle like:", error);
+    return { success: false, error: "Failed to toggle like" };
+  }
 };

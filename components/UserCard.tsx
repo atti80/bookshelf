@@ -10,12 +10,10 @@ import {
 } from "./ui/card";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
-import { getCurrentUser } from "@/actions/user.actions";
+import { FullUser } from "@/actions/user.actions";
 import { LogOutButton } from "./LogoutButton";
 
-const UserCard = async () => {
-  const user = await getCurrentUser({ withFullUser: true });
-
+const UserCard = async ({ user }: { user: FullUser | null }) => {
   return (
     <Card className="w-[70%] border-none">
       <CardHeader>
@@ -25,6 +23,14 @@ const UserCard = async () => {
         </CardDescription>
         <Separator></Separator>
       </CardHeader>
+      {user ? (
+        <CardContent>
+          <Link href={"/favorites"}>{`Favourites (${user.likes.length})`}</Link>
+          <div>{`Comments (${user.comments.length})`}</div>
+        </CardContent>
+      ) : (
+        <></>
+      )}
       <CardFooter className="flex-col gap-2">
         {user ? (
           <>

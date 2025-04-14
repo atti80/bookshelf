@@ -1,16 +1,12 @@
 "use client";
 
-import { getArticles } from "@/actions/article.actions";
+import { getArticles, toggleLike } from "@/actions/article.actions";
 import Image from "next/image";
 import Genres from "./Genres";
 import ReadMore from "./ReadMore";
 import { useEffect, useState } from "react";
-import {
-  HeartIcon,
-  LogInIcon,
-  MessageCircleIcon,
-  SendIcon,
-} from "lucide-react";
+import { HeartIcon, MessageCircleIcon } from "lucide-react";
+import { Button } from "./ui/button";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 type Article = Articles[number];
@@ -25,10 +21,30 @@ const Article = ({
   userId: number | null;
 }) => {
   const [imageUrl, setImageUrl] = useState("/images/bookshelf.jpg");
+  const [isLiking, setIsLiking] = useState(false);
+  const [hasLiked, setHasLiked] = useState(
+    article.likes.some((like) => like.userId === userId)
+  );
+  const [optimisticLikes, setOptmisticLikes] = useState(article.likes.length);
 
   useEffect(() => {
     if (bucketUrl) setImageUrl(`${bucketUrl}/${article.image}`);
   }, []);
+
+  const handleLike = async () => {
+    if (!userId || isLiking) return;
+    try {
+      setIsLiking(true);
+      setHasLiked((prev) => !prev);
+      setOptmisticLikes((prev) => prev + (hasLiked ? -1 : 1));
+      await toggleLike(userId, article.id);
+    } catch (error) {
+      setOptmisticLikes(article.likes.length);
+      setHasLiked(article.likes.some((like) => like.userId === userId));
+    } finally {
+      setIsLiking(false);
+    }
+  };
 
   return (
     <div className="bg-background p-12 flex flex-col items-center gap-8 rounded-md">
@@ -36,14 +52,31 @@ const Article = ({
         <div className="flex items-center justify-between">
           <Genres genres={article.genres}></Genres>
           <div className="flex gap-8">
-            <div className="flex gap-2">
-              <HeartIcon className="size-5" />
-              {article.likes.length}
-            </div>
-            <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`text-muted-foreground gap-2 ${
+                hasLiked
+                  ? "text-red-500 hover:text-red-600"
+                  : "hover:text-red-500"
+              }`}
+              onClick={handleLike}
+            >
+              {hasLiked ? (
+                <HeartIcon className="size-5 fill-current" />
+              ) : (
+                <HeartIcon className="size-5" />
+              )}
+              <span>{optimisticLikes}</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground gap-2"
+            >
               <MessageCircleIcon className="size-5" />
-              {article.comments.length}
-            </div>
+              <span>{article.comments.length}</span>
+            </Button>
           </div>
         </div>
         <h2 className="mt-4">{article.title}</h2>

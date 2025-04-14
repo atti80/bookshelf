@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 
-const ArticleList = () => {
+const ArticleList = ({ userId }: { userId: number | null }) => {
   const searchParams = useSearchParams();
   const genre = searchParams.get("genre");
   const [articles, setArticles] = useState<Articles>([]);
@@ -22,7 +22,7 @@ const ArticleList = () => {
   return (
     <div className="flex flex-col gap-8 w-3xl col-start-2 col-span-3">
       {articles.map((article) => (
-        <Article key={article.id} article={article} userId={0}></Article>
+        <Article key={article.id} article={article} userId={userId}></Article>
       ))}
     </div>
   );

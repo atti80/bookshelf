@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import { User } from "@/db/schema";
 import { cookies } from "next/headers";
 
-type FullUser = Exclude<
+export type FullUser = Exclude<
   Awaited<ReturnType<typeof getUserFromDb>>,
   undefined | null
 >;
@@ -58,6 +58,10 @@ export const getCurrentUser = cache(_getCurrentUser);
 function getUserFromDb(id: number) {
   return db.query.User.findFirst({
     columns: { id: true, email: true, isAdmin: true, name: true },
+    with: {
+      likes: {},
+      comments: {},
+    },
     where: eq(User.id, id),
   });
 }
