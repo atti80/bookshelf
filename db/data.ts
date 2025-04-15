@@ -2,20 +2,16 @@ export const users = [
   {
     name: "Attila Ven",
     email: "attila.ven@icloud.com",
-    clerkId: "cid123",
-    username: "attilaven",
+    salt: "8649c4326adc50a8f0adf349baeae6ed",
+    password:
+      "9a74d1d60f2b74c886e6e078e289099786cb3af05a156689c44718fa7590ab84a1cad7c849ddb786a066b265c2cf8dcdb698dfa941d422d37a26eba5aa4be1c4",
   },
   {
     name: "Jack Peterson",
-    email: "jpeterson@gmail.com",
-    clerkId: "cid124",
-    username: "jack87",
-  },
-  {
-    name: "Helen Smith",
-    email: "helen987@icloud.com",
-    clerkId: "cid125",
-    username: "helen_smith",
+    email: "jackpeterson@gmail.com",
+    salt: "53d25a4b108a226999fa8ec5f27cbcb7",
+    password:
+      "5f7f0f730cd28f3789c1e7483e122758aca83b8b6b1725137b703a9a218d40ce89bcfe1546f40e41fc46fa13ba6d1130f4817f7a854521b21a5f24a80873bca1",
   },
 ];
 
@@ -71,7 +67,7 @@ The book is a heavy critique on consumerism and the ridiculous nature of it. Eve
 That being said though, I found myself struggling to read it. It wasn’t the violence or the nastiness of the protagonist that put me off, although that was truly disturbing, it was the pessimism that ran through the book. There is no hope in sight. Ellis shows us a dark part of reality, and it left me feeling rather depressed. (This isn’t a criticism of the writing, for it is a fantastic creation, it’s just a summary of my feelings, such as they are.) Afterwards, I found myself craving something light and fluffy, something that would lift my spirits and restore some of my faith in humanity.
 
 It’s an intense book and it could leave you feeling rather shit. It affected me quite strongly, which bespeaks the power of this narrative.`,
-    authorId: 4,
+    authorId: 1,
     image: "americanpsycho.jpg",
     linkUrl:
       "https://www.amazon.com/gp/product/B003O86QBW/ref=x_gr_bb_kindle?caller=Goodreads&tag=x_gr_bb_kindle-20",
@@ -86,7 +82,7 @@ I found some other nits to pick, too. Some of them were small and trivial and fr
 
 As for the plot, I liked it. I liked the little vignettes Vonnegut came up with and the colourful characters he created (the British officers being my particular favourites). I liked the fact that you're never quite sure whether Billy is suffering from dementia, brain damage or some kind of delayed post-traumatic stress disorder, or whether there is some actual time-travelling going on. I even liked the jarring switches in perspective, although I think they could have been handled in a slightly more subtle manner. And I liked the book's anti-war message, weak and defeatist though it seemed to be. In short, I liked the book, but it took some doing. I hope I'll be less annoyed by the two other Vonnegut books I have sitting on my shelves, Breakfast of Champions and Cat's Cradle.`,
     image: "slaughterhouse5.jpg",
-    authorId: 5,
+    authorId: 2,
     status: "published",
     publishedAt: new Date(),
     linkUrl:
@@ -115,7 +111,7 @@ e) I was really pissed when I finally found out what the thing was. The main rea
 There were some bright spots. When Simmons wrote about the thing attacking the men, leaving bait for them and taunting them, he evoked moments that were truly terrifying and suspenseful. However, there just weren't enough of them. Sure, the attempts to survive against cold, hunger, and disease should have been compelling stuff, but they made for anemic reading when pitted against a terrifying adversary without name or shape. Also, the chapter in which the men throw a carnivale and erect tents that mirror the rooms in Edgar Allan Poe's The Masque of the Red Death is admittedly brilliant.
 
 When it comes right down to it, though, The Mighty Boosh did a far superior job of capturing the terror of the arctic. When Howard admonishes Vince that "The arctic is no respecter of fashion," I still get chills. The same cannot be said of my reaction to The Terror.`,
-    authorId: 4,
+    authorId: 1,
     image: "theterror.jpg",
     status: "published",
     publishedAt: new Date(),
@@ -131,7 +127,7 @@ Mother and son over the long haul, Faye and Samuel - a great unfolding and refol
 After finishing the story, I feel I was played by Hill; played like some sort instrument capable of everything from Classical to Rock and Roll and anything else that will move your blood or shake you up the way you like - and have you willing to go on tour to wherever there is a call for music.
 
 This book was intelligent, engrossing, and hands-down solid entertainment. A very memorable book. Nathan Hill is a writer to reckon with. I can't wait to get my hands on his next book.`,
-    authorId: 5,
+    authorId: 2,
     image: "thenix.jpg",
     status: "draft",
     publishedAt: new Date(),
@@ -155,7 +151,7 @@ Each sentence of this book is a joy. The writing simply flows and is incredibly 
 There are many different translations of this book, I myself chose the Diana Burgin and Katherine Tiernan O’Connor version published by Vintage (because really, you can’t go wrong with Vintage usually, not always but usually) because it offered a full version of the text and included many very helpful and insightful notes that really helped highlight the social context and the more apocryphal references. Nate has a wonderful review that highlights the differences between the many translations and was very helpful in my choosing of this text. As I cannot read it as intended in it’s original language, I felt this was at least ‘second-grade fresh’.
 
 I cannot stress more how incredible this book is. It is just an all-around good time and a marvelous example of magical-realism used to its highest capacity. Despite it’s often dark and macabre nature, it is uplifting and laugh out loud funny. Plus, the ending is a kick to the head. I read much of this through the subways of Boston recently while on a much-needed and exceptional vacation, and, like Pilate and his crucified friend, the memory of both have become one. Bulgakov’s masterpiece has survived censorship and translation to make it to you, don’t pass it by!`,
-    authorId: 4,
+    authorId: 2,
     image: "masterandmargarita.jpg",
     status: "published",
     publishedAt: new Date(),

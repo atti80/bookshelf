@@ -19,16 +19,17 @@ async function seed() {
       .insert(User)
       .values(user)
       .onConflictDoUpdate({
-        target: User.username,
+        target: User.email,
         set: {
           name: user.name,
           email: user.email,
-          clerkId: user.clerkId,
+          salt: user.salt,
+          password: user.password,
         },
       })
       .returning();
 
-    console.log(`User seeded: ${dbUser[0].id} ${dbUser[0].username}`);
+    console.log(`User seeded: ${dbUser[0].id} ${dbUser[0].name}`);
   }
 
   // ----------------------------------------------------------
