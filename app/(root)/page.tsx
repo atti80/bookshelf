@@ -13,7 +13,7 @@ export default async function Home() {
   return (
     <div className="grid grid-cols-5 justify-items-center items-start">
       <UserCard user={user}></UserCard>
-      <ArticleList userId={user?.id ?? null}></ArticleList>
+      <ArticleList userId={user?.id}></ArticleList>
     </div>
   );
 }

@@ -9,7 +9,6 @@ export const getArticles = async (
   genre: string | null,
   search: string | null
 ) => {
-  console.log(search);
   return await db.query.Article.findMany({
     where: and(
       eq(Article.status, "published"),

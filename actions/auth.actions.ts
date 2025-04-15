@@ -81,8 +81,6 @@ export async function signUp(unsafeData: z.infer<typeof signUpSchema>) {
 
     if (user == null) return "Unable to create account";
 
-    console.log(`user: ${user.id}, isAdmin: ${user.isAdmin}`);
-
     await createUserSession({ id: user.id, isAdmin: user.isAdmin ?? false });
   } catch (e) {
     console.log(e);

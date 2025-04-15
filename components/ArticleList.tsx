@@ -7,13 +7,11 @@ import { useEffect, useState } from "react";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 
-const ArticleList = ({ userId }: { userId: number | null }) => {
+const ArticleList = ({ userId }: { userId: number | null | undefined }) => {
   const searchParams = useSearchParams();
   const genre = searchParams.get("genre");
   const search = searchParams.get("search");
   const [articles, setArticles] = useState<Articles>([]);
-
-  console.log(`Articlelist: ${search}`);
 
   useEffect(() => {
     const loadArticles = async () => {
