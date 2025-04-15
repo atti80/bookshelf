@@ -50,7 +50,7 @@ const Article = ({
   };
 
   return (
-    <div className="bg-background p-12 flex flex-col items-center gap-8 rounded-md">
+    <div className="bg-background p-12 flex flex-col items-center gap-8 rounded-md col-span-2">
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between mb-4">
           <Genres genres={article.genres}></Genres>

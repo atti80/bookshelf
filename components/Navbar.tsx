@@ -2,7 +2,7 @@ import React from "react";
 import GenreSelect from "./GenreSelect";
 import { getGenres } from "@/actions/genre.actions";
 import Link from "next/link";
-
+import SearchInput from "./SearchInput";
 const Navbar = async () => {
   const genres = await getGenres();
   return (
@@ -18,7 +18,10 @@ const Navbar = async () => {
             <span className="text-xl flex items-center">bookshelf</span>
           </Link>
         </div>
-        <GenreSelect genres={genres}></GenreSelect>
+        <div className="flex gap-8">
+          <GenreSelect genres={genres}></GenreSelect>
+          <SearchInput></SearchInput>
+        </div>
       </nav>
     </header>
   );

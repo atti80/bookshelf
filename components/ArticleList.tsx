@@ -10,17 +10,20 @@ type Articles = Awaited<ReturnType<typeof getArticles>>;
 const ArticleList = ({ userId }: { userId: number | null }) => {
   const searchParams = useSearchParams();
   const genre = searchParams.get("genre");
+  const search = searchParams.get("search");
   const [articles, setArticles] = useState<Articles>([]);
+
+  console.log(`Articlelist: ${search}`);
 
   useEffect(() => {
     const loadArticles = async () => {
-      setArticles(await getArticles(genre));
+      setArticles(await getArticles(genre, search));
     };
     loadArticles();
-  }, [genre]);
+  }, [genre, search]);
 
   return (
-    <div className="flex flex-col gap-8 w-3xl col-start-2 col-span-3">
+    <div className="px-8 col-start-2 col-span-4 grid grid-cols-4 gap-8">
       {articles.map((article) => (
         <Article key={article.id} article={article} userId={userId}></Article>
       ))}

@@ -2,10 +2,14 @@
 
 import { db } from "@/db/db";
 import { Article, Genre, GenreToArticle, Like } from "@/db/schema";
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-export const getArticles = async (genre: string | null) => {
+export const getArticles = async (
+  genre: string | null,
+  search: string | null
+) => {
+  console.log(search);
   return await db.query.Article.findMany({
     where: and(
       eq(Article.status, "published"),
@@ -18,7 +22,8 @@ export const getArticles = async (genre: string | null) => {
               .innerJoin(Genre, eq(GenreToArticle.genreId, Genre.id))
               .where(eq(Genre.name, genre))
           )
-        : undefined
+        : undefined,
+      search ? ilike(Article.title, `%${search}%`) : undefined
     ),
     columns: {
       status: false,
