@@ -1,17 +1,46 @@
+"use client";
+
 import Image from "next/image";
 import { Trash2, Share, Download } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { formatDate } from "date-fns";
-import { getArticles } from "@/actions/article.actions";
+import {
+  getArticles,
+  togglePublishArticle,
+  deleteArticle,
+} from "@/actions/article.actions";
+import { toast } from "sonner";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 type Article = Articles[number];
 
 const bucketUrl = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
 
-const AdminListItem = ({ article }: { article: Article }) => {
+const AdminListItem = ({
+  article,
+  userId,
+}: {
+  article: Article;
+  userId: number;
+}) => {
   const imageUrl = `${bucketUrl}/${article.image}`;
+
+  const handlePublishToggle = async () => {
+    const prevStatus = article.status;
+    const result = await togglePublishArticle(article.id);
+    if (result.success)
+      toast.success(
+        prevStatus === "draft" ? "Article published" : "Article unpublished"
+      );
+    else toast.error(result.error);
+  };
+
+  const handleDelete = async () => {
+    const result = await deleteArticle(article.id);
+    if (result.success) toast.success("Article deleted");
+    else toast.error(result.error);
+  };
 
   return (
     <div
@@ -40,11 +69,12 @@ const AdminListItem = ({ article }: { article: Article }) => {
           </div>
         </div>
       </Link>
-      <div className="h-full flex flex-col gap-4 justify-between items-center">
+      <div className="h-full flex flex-col justify-between items-center">
         <Button
           variant="outline"
           className="hover:cursor-pointer text-foreground"
           title={article.status === "draft" ? "Publish" : "Unpublish"}
+          onClick={handlePublishToggle}
         >
           {article.status === "draft" ? <Share></Share> : <Download></Download>}
         </Button>
@@ -52,6 +82,7 @@ const AdminListItem = ({ article }: { article: Article }) => {
           variant="outline"
           className="hover:cursor-pointer text-foreground"
           title="Delete"
+          onClick={handleDelete}
         >
           <Trash2></Trash2>
         </Button>

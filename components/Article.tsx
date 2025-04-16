@@ -84,7 +84,7 @@ const Article = ({
         </div>
         {fullContent && (
           <p className="font-light text-gray-400">
-            {format(article.createdAt, "dd MMM yyyy")}
+            {format(article.publishedAt, "dd MMM yyyy")}
           </p>
         )}
         <h2>{article.title}</h2>

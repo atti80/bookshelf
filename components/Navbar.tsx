@@ -7,9 +7,11 @@ import SearchInput from "./SearchInput";
 const Navbar = async ({
   showFilters,
   title,
+  linkUrl,
 }: {
   showFilters?: boolean;
   title?: string;
+  linkUrl?: string;
 }) => {
   const genres = await getGenres();
 
@@ -22,7 +24,7 @@ const Navbar = async ({
             <div className="bg-primary w-2 h-2"></div>
             <div className="bg-primary-dark w-2 h-2"></div>
           </div>
-          <Link href={"/"}>
+          <Link href={linkUrl ? linkUrl : "/"}>
             <span className="text-xl flex items-center">
               {title ?? "bookshelf"}
             </span>
