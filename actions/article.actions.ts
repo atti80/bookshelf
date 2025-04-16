@@ -119,3 +119,65 @@ export const toggleLike = async (userId: number, articleId: number) => {
     return { success: false, error: "Failed to toggle like" };
   }
 };
+
+export const createArticle = async (
+  title: string,
+  content: string,
+  userId: number
+) => {
+  try {
+    const result = await db.insert(Article).values({
+      title: title,
+      content: content,
+      authorId: userId,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to create article", error);
+    return { success: false, error: "Failed to create article" };
+  }
+};
+
+export const togglePublishArticle = async (id: number) => {
+  try {
+    const article = await db.query.Article.findFirst({
+      where: eq(Article.id, id),
+    });
+
+    if (article?.status === "draft") {
+      await db
+        .update(Article)
+        .set({
+          publishedAt: new Date(),
+          status: "published",
+        })
+        .where(eq(Article.id, id));
+    } else {
+      await db
+        .update(Article)
+        .set({
+          status: "draft",
+        })
+        .where(eq(Article.id, id));
+    }
+
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to publish/unpublish article", error);
+    return { success: false, error: "Failed to publish/unpublish article" };
+  }
+};
+
+export const deleteArticle = async (id: number) => {
+  try {
+    await db.delete(Article).where(eq(Article.id, id));
+
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete article", error);
+    return { success: false, error: "Failed to delete article" };
+  }
+};

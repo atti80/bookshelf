@@ -22,9 +22,13 @@ const ArticleList = ({ userId }: { userId: number | null }) => {
 
   return (
     <div className="px-8 col-start-2 col-span-4 grid grid-cols-4 gap-8">
-      {articles.map((article) => (
-        <Article key={article.id} article={article} userId={userId}></Article>
-      ))}
+      {articles.length ? (
+        articles.map((article) => (
+          <Article key={article.id} article={article} userId={userId}></Article>
+        ))
+      ) : (
+        <h2 className="col-start-2">No articles found</h2>
+      )}
     </div>
   );
 };
