@@ -11,7 +11,7 @@ import {
 import { Separator } from "./ui/separator";
 import Link from "next/link";
 import { FullUser } from "@/actions/user.actions";
-import { LogOutButton } from "./LogoutButton";
+import { LogOutButton } from "./auth/LogoutButton";
 
 const UserCard = async ({ user }: { user: FullUser | null }) => {
   return (
