@@ -1,17 +1,18 @@
 "use server";
 
 import { db } from "@/db/db";
-import { Article, Genre, GenreToArticle, Like } from "@/db/schema";
+import { Article, Genre, GenreToArticle, Like, StatusType } from "@/db/schema";
 import { and, desc, eq, inArray, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const getArticles = async (
-  genre: string | null,
-  search: string | null
+  status?: StatusType,
+  genre?: string,
+  search?: string
 ) => {
   return await db.query.Article.findMany({
     where: and(
-      eq(Article.status, "published"),
+      status && eq(Article.status, status),
       genre && genre !== "all"
         ? inArray(
             Article.id,
@@ -25,7 +26,6 @@ export const getArticles = async (
       search ? ilike(Article.title, `%${search}%`) : undefined
     ),
     columns: {
-      status: false,
       updatedAt: false,
     },
     with: {
@@ -63,7 +63,6 @@ export const getArticle = async (id: number) => {
   return await db.query.Article.findFirst({
     where: eq(Article.id, id),
     columns: {
-      status: false,
       updatedAt: false,
     },
     with: {

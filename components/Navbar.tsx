@@ -4,7 +4,13 @@ import { getGenres } from "@/actions/genre.actions";
 import Link from "next/link";
 import SearchInput from "./SearchInput";
 
-const Navbar = async ({ showFilters }: { showFilters?: boolean }) => {
+const Navbar = async ({
+  showFilters,
+  title,
+}: {
+  showFilters?: boolean;
+  title?: string;
+}) => {
   const genres = await getGenres();
 
   return (
@@ -17,7 +23,9 @@ const Navbar = async ({ showFilters }: { showFilters?: boolean }) => {
             <div className="bg-primary-dark w-2 h-2"></div>
           </div>
           <Link href={"/"}>
-            <span className="text-xl flex items-center">bookshelf</span>
+            <span className="text-xl flex items-center">
+              {title ?? "bookshelf"}
+            </span>
           </Link>
         </div>
         {showFilters && (

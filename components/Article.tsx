@@ -88,7 +88,6 @@ const Article = ({
           </p>
         )}
         <h2>{article.title}</h2>
-        <p className="font-light text-gray-400">by {article.author.name}</p>
       </div>
       <div
         className={`flex ${fullContent && "flex-col items-center"} gap-12 ${
@@ -104,7 +103,7 @@ const Article = ({
         ></Image>
         <div className="flex flex-col justify-between">
           {fullContent ? (
-            <article>{article.content}</article>
+            <article className="whitespace-pre-line">{article.content}</article>
           ) : (
             <>
               <article className="line-clamp-8">
@@ -115,6 +114,11 @@ const Article = ({
           )}
         </div>
       </div>
+      {fullContent && (
+        <p className="font-light text-gray-400 self-end">
+          by {article.author.name}
+        </p>
+      )}
     </div>
   );
 };

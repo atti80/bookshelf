@@ -21,6 +21,8 @@ export const statusType = pgEnum("notificationType", [
   "deleted",
 ]);
 
+export type StatusType = (typeof statusType.enumValues)[number];
+
 export const User = pgTable("userTable", {
   id: serial().primaryKey(),
   email: text().notNull().unique(),
