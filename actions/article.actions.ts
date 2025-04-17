@@ -8,7 +8,9 @@ import { revalidatePath } from "next/cache";
 export const getArticles = async (
   status?: StatusType,
   genre?: string,
-  search?: string
+  search?: string,
+  limit?: number,
+  offset?: number
 ) => {
   return await db.query.Article.findMany({
     where: and(
@@ -56,6 +58,8 @@ export const getArticles = async (
       comments: {},
     },
     orderBy: [desc(Article.publishedAt)],
+    limit: limit,
+    offset: offset,
   });
 };
 
@@ -136,6 +140,27 @@ export const createArticle = async (
   } catch (error) {
     console.error("Failed to create article", error);
     return { success: false, error: "Failed to create article" };
+  }
+};
+
+export const updateArticle = async (
+  id: number,
+  title: string,
+  content: string
+) => {
+  try {
+    const result = await db
+      .update(Article)
+      .set({
+        title: title,
+        content: content,
+      })
+      .where(eq(Article.id, id));
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update article", error);
+    return { success: false, error: "Failed to update article" };
   }
 };
 
