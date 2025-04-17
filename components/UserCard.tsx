@@ -25,10 +25,16 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
       </CardHeader>
       {user ? (
         <CardContent>
-          <Link
-            href={"/favourites"}
-          >{`Favourites (${user.likes.length})`}</Link>
-          <div>{`Comments (${user.comments.length})`}</div>
+          <Link href={"/favourites"}>
+            <div className="flex items-center justify-between">
+              <span>Favourites</span>
+              <span>{user.likes.length}</span>
+            </div>
+          </Link>
+          <div className="flex items-center justify-between">
+            <span>Comments</span>
+            <span>{user.comments.length}</span>
+          </div>
         </CardContent>
       ) : (
         <></>

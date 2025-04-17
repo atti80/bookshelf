@@ -50,7 +50,7 @@ const Article = ({
   };
 
   return (
-    <div className="bg-background p-12 flex flex-col items-center gap-8 rounded-md col-span-2">
+    <div className="bg-background p-8 flex flex-col items-center gap-8 rounded-md col-span-2">
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between mb-4">
           <Genres genres={article.genres}></Genres>
@@ -60,25 +60,17 @@ const Article = ({
               size="sm"
               className={`text-muted-foreground gap-2 ${
                 hasLiked
-                  ? "text-red-500 hover:text-red-600"
-                  : "hover:text-red-500"
+                  ? "text-primary hover:text-primary-light hover:bg-transparent"
+                  : "hover:text-primary hover:bg-transparent"
               }`}
               onClick={handleLike}
             >
               {hasLiked ? (
-                <HeartIcon className="size-5 fill-current" />
+                <HeartIcon className="size-8 fill-current" />
               ) : (
-                <HeartIcon className="size-5" />
+                <HeartIcon className="size-6 mr-1" />
               )}
-              <span>{optimisticLikes}</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground gap-2"
-            >
-              <MessageCircleIcon className="size-5" />
-              <span>{article.comments.length}</span>
+              {/* <span>{optimisticLikes}</span> */}
             </Button>
           </div>
         </div>
