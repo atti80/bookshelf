@@ -1,7 +1,7 @@
 import { getArticles } from "@/actions/article.actions";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
-type Genre = Articles[number]["genres"][number];
+type Genre = Articles["articles"][number]["genres"][number];
 
 const Genres = ({ genres }: { genres: Genre[] }) => {
   return (

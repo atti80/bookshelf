@@ -19,24 +19,24 @@ const GenreSelect = ({ genres }: { genres: Genres }) => {
   const searchParams = useSearchParams();
   const genre = searchParams.get("genre");
 
+  const handleGenreChange = (genre: string) => {
+    if (genre === "0") router.push(pathname);
+    else router.push(`${pathname}?genre=${genre}`);
+  };
+
   return (
     <div>
-      <Select
-        value={genre ?? "all"}
-        onValueChange={(genre) => {
-          router.push(`${pathname}?genre=${genre}`);
-        }}
-      >
+      <Select value={genre ?? "0"} onValueChange={handleGenreChange}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select a genre" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem key={0} value="all">
+            <SelectItem key={0} value="0">
               All genres
             </SelectItem>
             {genres.map((genre) => (
-              <SelectItem key={genre.id} value={genre.name}>
+              <SelectItem key={genre.id} value={genre.id.toString()}>
                 {genre.name}
               </SelectItem>
             ))}

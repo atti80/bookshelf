@@ -1,33 +1,84 @@
 "use server";
 
 import { db } from "@/db/db";
-import { Article, Genre, GenreToArticle, Like, StatusType } from "@/db/schema";
+import { Article, GenreToArticle, Like, StatusType } from "@/db/schema";
 import { and, desc, eq, inArray, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const getArticles = async (
   status?: StatusType,
-  genre?: string,
+  genreId?: number,
   search?: string,
   limit?: number,
   offset?: number
-) => {
-  return await db.query.Article.findMany({
-    where: and(
-      status && eq(Article.status, status),
-      genre && genre !== "all"
+): Promise<{
+  count: number;
+  articles: {
+    id: number;
+    title: string;
+    content: string;
+    createdAt: Date;
+    publishedAt: Date | null;
+    status: StatusType;
+    authorId: number;
+    image: string | null;
+    author: {
+      name: string | null;
+    };
+    genres: {
+      genreId: number;
+      genre: { name: string };
+    }[];
+    labels: {
+      label: { name: string };
+    }[];
+    likes: {
+      userId: number;
+      articleId: number;
+      createdAt: Date | null;
+    }[];
+    comments: {
+      userId: number;
+      articleId: number;
+      createdAt: Date | null;
+      content: string | null;
+    }[];
+  }[];
+}> => {
+  const count = await db.$count(
+    Article,
+    and(
+      status ? eq(Article.status, status) : undefined,
+      search ? ilike(Article.title, `%${search}%`) : undefined,
+      genreId && genreId !== 0
         ? inArray(
             Article.id,
             db
               .select({ id: GenreToArticle.articleId })
               .from(GenreToArticle)
-              .innerJoin(Genre, eq(GenreToArticle.genreId, Genre.id))
-              .where(eq(Genre.name, genre))
+              .where(eq(GenreToArticle.genreId, genreId))
+          )
+        : undefined
+    )
+  );
+
+  const articles = await db.query.Article.findMany({
+    where: and(
+      status && eq(Article.status, status),
+      genreId && genreId !== 0
+        ? inArray(
+            Article.id,
+            db
+              .select({ id: GenreToArticle.articleId })
+              .from(GenreToArticle)
+              .where(eq(GenreToArticle.genreId, genreId))
           )
         : undefined,
       search ? ilike(Article.title, `%${search}%`) : undefined
     ),
     columns: {
+      linkUrl: false,
+      isFeatured: false,
       updatedAt: false,
     },
     with: {
@@ -37,6 +88,9 @@ export const getArticles = async (
         },
       },
       genres: {
+        columns: {
+          articleId: false,
+        },
         with: {
           genre: {
             columns: {
@@ -46,6 +100,10 @@ export const getArticles = async (
         },
       },
       labels: {
+        columns: {
+          articleId: false,
+          labelId: false,
+        },
         with: {
           label: {
             columns: {
@@ -61,6 +119,8 @@ export const getArticles = async (
     limit: limit,
     offset: offset,
   });
+
+  return { count: count, articles: articles };
 };
 
 export const getArticle = async (id: number) => {

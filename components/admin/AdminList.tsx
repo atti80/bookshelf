@@ -3,7 +3,7 @@ import AdminListItem from "./AdminListItem";
 import { getCurrentUser } from "@/actions/user.actions";
 
 const AdminList = async () => {
-  const articles = await getArticles();
+  const articles = (await getArticles()).articles;
   const user = await getCurrentUser();
 
   if (user === null) return;

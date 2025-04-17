@@ -13,7 +13,7 @@ import {
 import { toast } from "sonner";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
-type Article = Articles[number];
+type Article = Articles["articles"][number];
 
 const bucketUrl = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
 

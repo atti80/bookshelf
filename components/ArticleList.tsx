@@ -4,30 +4,59 @@ import { getArticles } from "@/actions/article.actions";
 import Article from "./Article";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Pagination from "./Pagination";
 
-type Articles = Awaited<ReturnType<typeof getArticles>>;
+type Articles = Awaited<ReturnType<typeof getArticles>>["articles"];
+const ARTICLES_PER_PAGE = 10;
 
 const ArticleList = ({ userId }: { userId: number | null }) => {
   const searchParams = useSearchParams();
-  const genre = searchParams.get("genre") ?? undefined;
-  const search = searchParams.get("search") ?? undefined;
   const [articles, setArticles] = useState<Articles>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    const genreParam = searchParams.get("genre") ?? undefined;
+    const searchParam = searchParams.get("search") ?? undefined;
+    const pageParam = searchParams.get("page") ?? undefined;
+    const page = parseInt(pageParam ?? "1");
+
     const loadArticles = async () => {
-      setArticles(await getArticles("published", genre, search));
+      const result = await getArticles(
+        "published",
+        parseInt(genreParam ?? "0"),
+        searchParam,
+        ARTICLES_PER_PAGE,
+        (page - 1) * ARTICLES_PER_PAGE
+      );
+
+      setArticles(result.articles);
+      setTotalPages(Math.ceil(result.count / ARTICLES_PER_PAGE));
     };
+    setCurrentPage(page);
     loadArticles();
-  }, [genre, search]);
+  }, [searchParams]);
 
   return (
-    <div className="px-8 col-start-2 col-span-4 grid grid-cols-4 gap-8">
+    <div className="px-8 col-start-2 col-span-4">
       {articles.length ? (
-        articles.map((article) => (
-          <Article key={article.id} article={article} userId={userId}></Article>
-        ))
+        <div className="flex flex-col items-center">
+          <div className="grid grid-cols-4 gap-8">
+            {articles.map((article) => (
+              <Article
+                key={article.id}
+                article={article}
+                userId={userId}
+              ></Article>
+            ))}
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+          ></Pagination>
+        </div>
       ) : (
-        <h2 className="col-start-2">No articles found</h2>
+        <h2>No articles found</h2>
       )}
     </div>
   );
