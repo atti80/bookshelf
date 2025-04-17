@@ -7,7 +7,7 @@ export function LogOutButton() {
   return (
     <Button
       className="w-full"
-      variant="destructive"
+      variant="outline"
       onClick={async () => await logOut()}
     >
       Log Out

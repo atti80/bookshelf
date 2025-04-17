@@ -93,7 +93,9 @@ export function SignUpForm() {
           <Button asChild variant="link">
             <Link href="/sign-in">Sign In</Link>
           </Button>
-          <Button type="submit">Sign Up</Button>
+          <Button type="submit" variant="secondary">
+            Sign Up
+          </Button>
         </div>
       </form>
     </Form>

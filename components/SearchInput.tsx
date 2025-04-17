@@ -23,7 +23,7 @@ const SearchInput = () => {
         }}
       ></Input>
       <Button
-        className="hover:cursor-pointer"
+        variant="secondary"
         onClick={() => {
           if (searchText.length)
             router.push(`${pathname}?search=${searchText}`);
