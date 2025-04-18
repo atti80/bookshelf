@@ -9,7 +9,7 @@ import Pagination from "./Pagination";
 type Articles = Awaited<ReturnType<typeof getArticles>>["articles"];
 const ARTICLES_PER_PAGE = 10;
 
-const ArticleList = ({ userId }: { userId: number | null }) => {
+const ArticleList = ({ userId }: { userId: number | undefined }) => {
   const searchParams = useSearchParams();
   const [articles, setArticles] = useState<Articles>([]);
   const [totalPages, setTotalPages] = useState(0);

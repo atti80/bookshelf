@@ -59,8 +59,12 @@ function getUserFromDb(id: number) {
   return db.query.User.findFirst({
     columns: { id: true, email: true, isAdmin: true, name: true },
     with: {
-      likes: {},
-      comments: {},
+      likes: {
+        columns: { articleId: true },
+      },
+      comments: {
+        columns: { id: true },
+      },
     },
     where: eq(User.id, id),
   });
