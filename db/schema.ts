@@ -66,20 +66,17 @@ export const Like = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.articleId] })]
 );
 
-export const Comment = pgTable(
-  "commentTable",
-  {
-    userId: integer()
-      .notNull()
-      .references(() => User.id, { onDelete: "cascade" }),
-    articleId: integer()
-      .notNull()
-      .references(() => Article.id, { onDelete: "cascade" }),
-    content: text(),
-    createdAt: timestamp().defaultNow().notNull(),
-  },
-  (table) => [primaryKey({ columns: [table.userId, table.articleId] })]
-);
+export const Comment = pgTable("commentTable", {
+  id: serial().primaryKey(),
+  userId: integer()
+    .notNull()
+    .references(() => User.id, { onDelete: "cascade" }),
+  articleId: integer()
+    .notNull()
+    .references(() => Article.id, { onDelete: "cascade" }),
+  content: text(),
+  createdAt: timestamp().defaultNow().notNull(),
+});
 
 export const Label = pgTable("labelTable", {
   id: serial().primaryKey(),

@@ -1,0 +1,1 @@
+ALTER TABLE "commentTable" ADD COLUMN "id" serial PRIMARY KEY NOT NULL;
