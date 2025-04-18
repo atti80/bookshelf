@@ -4,10 +4,12 @@ import { getArticles, toggleLike } from "@/actions/article.actions";
 import Image from "next/image";
 import Genres from "./Genres";
 import ReadMore from "./ReadMore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { HeartIcon, MessageCircleIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { format } from "date-fns";
+import { ReadMoreHandle } from "./ReadMore";
+import Link from "next/link";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 type Article = Articles["articles"][number];
@@ -20,9 +22,10 @@ const Article = ({
   fullContent = false,
 }: {
   article: Article;
-  userId: number | null;
+  userId: number | undefined;
   fullContent?: boolean;
 }) => {
+  const readmoreRef = useRef<ReadMoreHandle>(null);
   const [imageUrl, setImageUrl] = useState("/images/bookshelf.jpg");
   const [isLiking, setIsLiking] = useState(false);
   const [hasLiked, setHasLiked] = useState(
@@ -46,6 +49,18 @@ const Article = ({
       setHasLiked(article.likes.some((like) => like.userId === userId));
     } finally {
       setIsLiking(false);
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (readmoreRef.current) {
+      readmoreRef.current.startAnimation();
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (readmoreRef.current) {
+      readmoreRef.current.reverseAnimation();
     }
   };
 
@@ -97,12 +112,18 @@ const Article = ({
           {fullContent ? (
             <article className="whitespace-pre-line">{article.content}</article>
           ) : (
-            <>
-              <article className="line-clamp-8">
-                {article.content.substring(0, 600)}
-              </article>
-              <ReadMore id={article.id}></ReadMore>
-            </>
+            <Link href={`/article/${article.id}`}>
+              <div
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                className="flex flex-col gap-4 h-full cursor-pointer"
+              >
+                <article className="line-clamp-8">
+                  {article.content.substring(0, 600)}
+                </article>
+                <ReadMore ref={readmoreRef}></ReadMore>
+              </div>
+            </Link>
           )}
         </div>
       </div>

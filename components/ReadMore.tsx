@@ -1,18 +1,30 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
-import Link from "next/link";
+import { useRef, useImperativeHandle, RefObject } from "react";
 
-const ReadMore = ({ id }: { id: number }) => {
+export type ReadMoreHandle = {
+  startAnimation: () => void;
+  reverseAnimation: () => void;
+};
+
+const ReadMore = ({ ref }: { ref: RefObject<ReadMoreHandle | null> }) => {
   const container = useRef<HTMLElement | any>(null);
   const tl = useRef<GSAPTimeline | any>(gsap.timeline());
-  const hoverAnimation = () => {
-    tl.current.reversed(false);
-  };
 
-  const reverseHoverAnimation = () => {
-    tl.current.reversed(true);
-  };
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        startAnimation() {
+          tl.current.reversed(false);
+        },
+        reverseAnimation() {
+          tl.current.reversed(true);
+        },
+      };
+    },
+    []
+  );
 
   useGSAP(
     () => {
@@ -47,16 +59,9 @@ const ReadMore = ({ id }: { id: number }) => {
 
   return (
     <div className="flex items-center gap-2" ref={container}>
-      <Link href={`/article/${id}`}>
-        <span
-          id="readmore-text"
-          className="text-primary-dark"
-          onMouseEnter={hoverAnimation}
-          onMouseLeave={reverseHoverAnimation}
-        >
-          Read more
-        </span>
-      </Link>
+      <span id="readmore-text" className="text-primary-dark">
+        Read more
+      </span>
       <div id="arrows" className="flex items-center w-16 gap-2 ">
         <div className="w-0 h-0 border-l-16 border-t-8 border-b-8 border-r-0 border-l-primary-dark border-t-transparent border-b-transparent readmore-arrow opacity-0"></div>
         <div className="w-0 h-0 border-l-16 border-t-8 border-b-8 border-r-0 border-l-primary border-t-transparent border-b-transparent readmore-arrow opacity-0"></div>
