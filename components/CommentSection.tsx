@@ -3,12 +3,25 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { getComments, createComment } from "@/actions/comment.actions";
+import {
+  getComments,
+  createComment,
+  deleteComment,
+} from "@/actions/comment.actions";
 import { toast } from "sonner";
 import { Separator } from "./ui/separator";
+import { Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 type Comments = Awaited<ReturnType<typeof getComments>>;
-type Comment = Comments[number];
 
 const CommentSection = ({
   articleId,
@@ -20,7 +33,7 @@ const CommentSection = ({
   userName: string | undefined;
 }) => {
   const [comments, setComments] = useState<Comments>([]);
-  const [newComment, setNewComment] = useState("");
+  const [commentText, setCommentText] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
 
   useEffect(() => {
@@ -28,29 +41,27 @@ const CommentSection = ({
       const result = await getComments(articleId);
       setComments(result);
     };
-
     fetchComments();
   }, []);
 
   const handleCommentSubmit = async () => {
-    if (isCommenting || !newComment.trim() || !userId || !articleId) return;
+    if (isCommenting || !commentText.trim() || !userId || !articleId) return;
 
     try {
       setIsCommenting(true);
-      const result = await createComment(articleId, userId, newComment.trim());
+      const result = await createComment(articleId, userId, commentText.trim());
       if (result.success) {
         toast.success("Comment posted successfully");
-
         if (result.data) {
-          const newCommentData: Comment = {
-            ...result.data,
-            user: { name: userName ?? null },
-          };
-          setComments((prev) => {
-            return [...prev, newCommentData];
-          });
+          setComments((prev) => [
+            {
+              ...result.data,
+              user: { id: userId, name: userName ?? null },
+            },
+            ...prev,
+          ]);
         }
-        setNewComment("");
+        setCommentText("");
       }
       setIsCommenting(false);
     } catch (error) {
@@ -60,19 +71,33 @@ const CommentSection = ({
     }
   };
 
+  const handleDelete = async (commentId: number) => {
+    try {
+      const result = await deleteComment(commentId);
+      if (result.success) {
+        setComments((prev) =>
+          prev.filter((comment) => comment.id !== commentId)
+        );
+        toast.success("Comment deleted successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to delete comment");
+    }
+  };
+
   return (
     <div className="bg-background rounded-md flex flex-col p-4 gap-4">
       {userId && (
         <div className="flex items-end gap-4">
           <Textarea
             placeholder="Type your comment here..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
           ></Textarea>
           <Button
             variant="secondary"
             onClick={handleCommentSubmit}
-            disabled={!newComment.trim() || isCommenting}
+            disabled={!commentText.trim() || isCommenting}
           >
             Submit
           </Button>
@@ -85,9 +110,42 @@ const CommentSection = ({
         </>
       )}
       {comments.map((comment) => (
-        <div key={comment.id} className="flex flex-col">
-          <span className="font-bold">{comment.user.name}</span>
-          <span>{comment.content}</span>
+        <div key={comment.id} className="flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="font-bold">{comment.user.name}</span>
+            <span>{comment.content}</span>
+          </div>
+          {userId && comment.userId === userId && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="hover:cursor-pointer text-foreground"
+                  title="Delete"
+                >
+                  <Trash2></Trash2>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Delete this comment?</DialogTitle>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="secondary">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      handleDelete(comment.id);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       ))}
     </div>

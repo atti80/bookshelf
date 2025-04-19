@@ -43,5 +43,11 @@ export const createComment = async (
 };
 
 export const deleteComment = async (commentId: number) => {
-  await db.delete(Comment).where(eq(Comment.id, commentId));
+  try {
+    await db.delete(Comment).where(eq(Comment.id, commentId));
+    return { success: true };
+  } catch (error) {
+    console.error(`Failed to delete comment with id ${commentId}`, error);
+    return { success: false, error: "Failed to create comment" };
+  }
 };

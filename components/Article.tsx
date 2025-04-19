@@ -78,6 +78,10 @@ const Article = ({
                   ? "text-primary hover:text-primary-light hover:bg-transparent"
                   : "hover:text-primary hover:bg-transparent"
               }`}
+              disabled={isLiking}
+              title={
+                userId ? (hasLiked ? "Unlike" : "Like") : "Sign in to like"
+              }
               onClick={handleLike}
             >
               {hasLiked ? (
