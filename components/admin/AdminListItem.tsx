@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Trash2, Share, Download } from "lucide-react";
+import { Trash2, Send, Undo2 } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { formatDate } from "date-fns";
@@ -11,6 +11,15 @@ import {
   deleteArticle,
 } from "@/actions/article.actions";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 type Article = Articles["articles"][number];
@@ -76,16 +85,32 @@ const AdminListItem = ({
           title={article.status === "draft" ? "Publish" : "Unpublish"}
           onClick={handlePublishToggle}
         >
-          {article.status === "draft" ? <Share></Share> : <Download></Download>}
+          {article.status === "draft" ? <Send></Send> : <Undo2></Undo2>}
         </Button>
-        <Button
-          variant="outline"
-          className="hover:cursor-pointer text-foreground"
-          title="Delete"
-          onClick={handleDelete}
-        >
-          <Trash2></Trash2>
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="hover:cursor-pointer text-foreground"
+              title="Delete"
+            >
+              <Trash2></Trash2>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete this article?</DialogTitle>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="secondary">Cancel</Button>
+              </DialogClose>
+              <Button variant="destructive" onClick={handleDelete}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
