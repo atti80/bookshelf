@@ -1,41 +1,32 @@
-"use client";
-
 import { getArticles } from "@/actions/article.actions";
 import Article from "./Article";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import Pagination from "./Pagination";
 
-type Articles = Awaited<ReturnType<typeof getArticles>>["articles"];
-const ARTICLES_PER_PAGE = 10;
+type ArticleListProps = {
+  userId: number | undefined;
+  genreId: number;
+  searchText: string;
+  page: number;
+};
 
-const ArticleList = ({ userId }: { userId: number | undefined }) => {
-  const searchParams = useSearchParams();
-  const [articles, setArticles] = useState<Articles>([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+const ARTICLES_PER_PAGE = 3;
 
-  useEffect(() => {
-    const genreParam = searchParams.get("genre") ?? undefined;
-    const searchParam = searchParams.get("search") ?? undefined;
-    const pageParam = searchParams.get("page") ?? undefined;
-    const page = parseInt(pageParam ?? "1");
+const ArticleList = async ({
+  userId,
+  genreId,
+  searchText,
+  page,
+}: ArticleListProps) => {
+  const result = await getArticles(
+    "published",
+    genreId,
+    searchText,
+    ARTICLES_PER_PAGE,
+    page ? (page - 1) * ARTICLES_PER_PAGE : 0
+  );
 
-    const loadArticles = async () => {
-      const result = await getArticles(
-        "published",
-        parseInt(genreParam ?? "0"),
-        searchParam,
-        ARTICLES_PER_PAGE,
-        (page - 1) * ARTICLES_PER_PAGE
-      );
-
-      setArticles(result.articles);
-      setTotalPages(Math.ceil(result.count / ARTICLES_PER_PAGE));
-    };
-    setCurrentPage(page);
-    loadArticles();
-  }, [searchParams]);
+  const articles = result.articles;
+  const totalPages = Math.ceil(result.count / ARTICLES_PER_PAGE);
 
   return (
     <div className="px-8 col-start-2 col-span-4">
@@ -50,10 +41,7 @@ const ArticleList = ({ userId }: { userId: number | undefined }) => {
               ></Article>
             ))}
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-          ></Pagination>
+          <Pagination totalPages={totalPages}></Pagination>
         </div>
       ) : (
         <h2>No articles found</h2>
