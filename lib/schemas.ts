@@ -19,4 +19,5 @@ export const articleSchema = z.object({
   content: z
     .string()
     .min(20, { message: "Content must be at least 20 characters" }),
+  image: z.string().optional(),
 });

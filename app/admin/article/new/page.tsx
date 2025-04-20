@@ -6,7 +6,7 @@ const NewArticlePage = async () => {
   if (user === null) return;
 
   return (
-    <div>
+    <div className="p-8">
       <ArticleEdit userId={user.id}></ArticleEdit>
     </div>
   );

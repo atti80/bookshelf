@@ -14,7 +14,7 @@ import Link from "next/link";
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 type Article = Articles["articles"][number];
 
-const bucketUrl = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
+const BUCKET_URL = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
 
 const Article = ({
   article,
@@ -34,7 +34,7 @@ const Article = ({
   const [optimisticLikes, setOptmisticLikes] = useState(article.likes.length);
 
   useEffect(() => {
-    if (bucketUrl) setImageUrl(`${bucketUrl}/${article.image}`);
+    if (BUCKET_URL) setImageUrl(`${BUCKET_URL}/${article.image}`);
   }, []);
 
   const handleLike = async () => {

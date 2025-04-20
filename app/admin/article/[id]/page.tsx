@@ -14,7 +14,7 @@ const ArticleEditPage = async ({
   if (user === null) return;
 
   return (
-    <div>
+    <div className="p-8">
       <ArticleEdit article={article} userId={user.id}></ArticleEdit>
     </div>
   );

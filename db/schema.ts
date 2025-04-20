@@ -46,7 +46,7 @@ export const Article = pgTable("articleTable", {
     .references(() => User.id),
   status: statusType().notNull().default("draft"),
   linkUrl: text(),
-  image: text(),
+  image: text().notNull(),
   isFeatured: boolean().default(false),
   publishedAt: timestamp(),
   ...timestamps,

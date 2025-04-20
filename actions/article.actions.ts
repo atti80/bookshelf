@@ -5,6 +5,11 @@ import { Article, GenreToArticle, Like, StatusType } from "@/db/schema";
 import { and, desc, eq, inArray, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+export interface Result {
+  success: boolean;
+  error?: string;
+}
+
 export const getArticles = async (
   status?: StatusType,
   genreId?: number,
@@ -185,15 +190,17 @@ export const toggleLike = async (userId: number, articleId: number) => {
 };
 
 export const createArticle = async (
+  authorId: number,
   title: string,
   content: string,
-  userId: number
-) => {
+  image: string
+): Promise<Result> => {
   try {
     const result = await db.insert(Article).values({
       title: title,
       content: content,
-      authorId: userId,
+      authorId: authorId,
+      image: image,
     });
 
     return { success: true };
@@ -206,14 +213,16 @@ export const createArticle = async (
 export const updateArticle = async (
   id: number,
   title: string,
-  content: string
-) => {
+  content: string,
+  image: string
+): Promise<Result> => {
   try {
     const result = await db
       .update(Article)
       .set({
         title: title,
         content: content,
+        image: image,
       })
       .where(eq(Article.id, id));
 
