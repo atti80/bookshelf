@@ -12,6 +12,15 @@ export const signUpSchema = z.object({
 });
 
 export const articleSchema = z.object({
+  genres: z
+    .array(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+      })
+    )
+    .min(1, "Select at least one genre")
+    .max(5, "Select at most 5 genres"),
   title: z
     .string()
     .min(3, { message: "Title must be at least 3 characters" })

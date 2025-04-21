@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import Image from "next/image";
 import { uploadImage } from "@/actions/image.actions";
+import { GenreMultiSelect } from "./GenreMultiSelect";
 
 const BUCKET_URL = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
 type Article = Awaited<ReturnType<typeof getArticle>>;
@@ -48,6 +49,11 @@ const ArticleEdit = ({
     defaultValues: {
       title: `${article ? article.title : ""}`,
       content: `${article ? article.content : ""}`,
+      genres: article
+        ? article.genres.map((g) => {
+            return { id: g.genreId, name: g.genre.name };
+          })
+        : [],
     },
   });
 
@@ -85,14 +91,16 @@ const ArticleEdit = ({
         article.id,
         values.title,
         values.content,
-        file ? file.name : article.image
+        file ? file.name : article.image,
+        values.genres.map((genre) => genre.id)
       );
     else if (file)
       result = await createArticle(
         userId,
         values.title,
         values.content,
-        file.name
+        file.name,
+        values.genres.map((genre) => genre.id)
       );
 
     if (result.success) {
@@ -110,10 +118,28 @@ const ArticleEdit = ({
     setPreviewUrl("");
   };
 
+  const genres = form.watch("genres");
+
   return (
-    <div className="w-4xl mx-auto bg-background p-8 rounded-2xl">
+    <div className="w-4xl mx-auto bg-background p-8 rounded-2xl flex flex-col gap-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="genres"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Genres</FormLabel>
+                <FormControl>
+                  <GenreMultiSelect
+                    value={genres}
+                    onChange={(newGenres) => form.setValue("genres", newGenres)}
+                  ></GenreMultiSelect>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="title"

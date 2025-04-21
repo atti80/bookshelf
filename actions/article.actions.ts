@@ -2,7 +2,7 @@
 
 import { db } from "@/db/db";
 import { Article, GenreToArticle, Like, StatusType } from "@/db/schema";
-import { and, desc, eq, inArray, ilike } from "drizzle-orm";
+import { and, desc, eq, inArray, ilike, notInArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export interface Result {
@@ -193,15 +193,28 @@ export const createArticle = async (
   authorId: number,
   title: string,
   content: string,
-  image: string
+  image: string,
+  genreIds?: number[]
 ): Promise<Result> => {
   try {
-    const result = await db.insert(Article).values({
-      title: title,
-      content: content,
-      authorId: authorId,
-      image: image,
-    });
+    const newArticle = await db
+      .insert(Article)
+      .values({
+        title: title,
+        content: content,
+        authorId: authorId,
+        image: image,
+      })
+      .returning();
+
+    if (genreIds && genreIds.length > 0) {
+      await db.insert(GenreToArticle).values(
+        genreIds.map((genreId) => ({
+          articleId: newArticle[0].id,
+          genreId: genreId,
+        }))
+      );
+    }
 
     return { success: true };
   } catch (error) {
@@ -214,7 +227,8 @@ export const updateArticle = async (
   id: number,
   title: string,
   content: string,
-  image: string
+  image: string,
+  genreIds?: number[]
 ): Promise<Result> => {
   try {
     const result = await db
@@ -225,6 +239,27 @@ export const updateArticle = async (
         image: image,
       })
       .where(eq(Article.id, id));
+
+    if (genreIds && genreIds.length > 0) {
+      await db
+        .delete(GenreToArticle)
+        .where(
+          and(
+            eq(GenreToArticle.articleId, id),
+            notInArray(GenreToArticle.genreId, genreIds)
+          )
+        );
+
+      await db
+        .insert(GenreToArticle)
+        .values(
+          genreIds.map((genreId) => ({
+            articleId: id,
+            genreId: genreId,
+          }))
+        )
+        .onConflictDoNothing();
+    }
 
     return { success: true };
   } catch (error) {

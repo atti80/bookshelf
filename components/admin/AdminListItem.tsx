@@ -66,11 +66,21 @@ const AdminListItem = ({
             style={{ objectFit: "contain" }}
           ></Image>
           <div>
-            <p className="font-light text-sm">
-              {article.status === "draft"
-                ? "Draft"
-                : formatDate(article.createdAt, "dd/MM/yyyy")}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="font-light text-sm">
+                {article.status === "draft"
+                  ? "Draft"
+                  : formatDate(article.createdAt, "dd/MM/yyyy")}
+              </p>
+              {article.genres.map((genre) => (
+                <p
+                  key={genre.genreId}
+                  className="text-xs bg-primary text-background rounded-full px-1"
+                >
+                  {genre.genre.name}
+                </p>
+              ))}
+            </div>
             <p>{article.title}</p>
             <p className="line-clamp-3 text-sm font-light mt-2">
               {article.content}
