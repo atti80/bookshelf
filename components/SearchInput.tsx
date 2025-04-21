@@ -3,15 +3,19 @@
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const SearchInput = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const searchParam = searchParams.get("search") ?? "";
-  const [searchText, setSearchText] = useState(searchParam);
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    const currentSearch = searchParams.get("search") ?? "";
+    setSearchText(currentSearch);
+  }, [searchParams]);
 
   return (
     <div className="flex gap-1">
