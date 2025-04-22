@@ -93,7 +93,7 @@ const Article = ({
             </Button>
           </div>
         </div>
-        {fullContent && (
+        {fullContent && article.publishedAt && (
           <p className="font-light text-gray-400">
             {format(article.publishedAt, "dd MMM yyyy")}
           </p>
