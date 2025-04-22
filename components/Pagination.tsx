@@ -8,6 +8,7 @@ import {
   ChevronFirst,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const Pagination = ({ totalPages }: { totalPages: number }) => {
   const router = useRouter();
@@ -74,4 +75,12 @@ const Pagination = ({ totalPages }: { totalPages: number }) => {
   );
 };
 
-export default Pagination;
+const PaginationWrapper = ({ totalPages }: { totalPages: number }) => {
+  return (
+    <Suspense>
+      <Pagination totalPages={totalPages}></Pagination>
+    </Suspense>
+  );
+};
+
+export default PaginationWrapper;

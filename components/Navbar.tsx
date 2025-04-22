@@ -1,8 +1,8 @@
 import React from "react";
-import GenreSelect from "./GenreSelect";
+import GenreSelectWrapper from "./GenreSelect";
 import { getGenres } from "@/actions/genre.actions";
 import Link from "next/link";
-import SearchInput from "./SearchInput";
+import SearchInputWrapper from "./SearchInput";
 
 const Navbar = async ({
   showFilters,
@@ -32,8 +32,8 @@ const Navbar = async ({
         </div>
         {showFilters && (
           <div className="flex gap-8">
-            <GenreSelect genres={genres}></GenreSelect>
-            <SearchInput></SearchInput>
+            <GenreSelectWrapper genres={genres}></GenreSelectWrapper>
+            <SearchInputWrapper></SearchInputWrapper>
           </div>
         )}
       </nav>

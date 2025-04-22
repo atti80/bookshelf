@@ -1,6 +1,6 @@
 import { getArticles } from "@/actions/article.actions";
 import Article from "./Article";
-import Pagination from "./Pagination";
+import PaginationWrapper from "./Pagination";
 
 type ArticleListProps = {
   userId: number | undefined;
@@ -41,7 +41,7 @@ const ArticleList = async ({
               ></Article>
             ))}
           </div>
-          <Pagination totalPages={totalPages}></Pagination>
+          <PaginationWrapper totalPages={totalPages}></PaginationWrapper>
         </div>
       ) : (
         <h2>No articles found</h2>

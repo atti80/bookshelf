@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 type Genres = Awaited<ReturnType<typeof getGenres>>;
 
@@ -47,4 +48,12 @@ const GenreSelect = ({ genres }: { genres: Genres }) => {
   );
 };
 
-export default GenreSelect;
+const GenreSelectWrapper = ({ genres }: { genres: Genres }) => {
+  return (
+    <Suspense>
+      <GenreSelect genres={genres}></GenreSelect>
+    </Suspense>
+  );
+};
+
+export default GenreSelectWrapper;

@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const SearchInput = () => {
   const router = useRouter();
@@ -41,4 +42,12 @@ const SearchInput = () => {
   );
 };
 
-export default SearchInput;
+const SearchInputWrapper = () => {
+  return (
+    <Suspense>
+      <SearchInput></SearchInput>
+    </Suspense>
+  );
+};
+
+export default SearchInputWrapper;
