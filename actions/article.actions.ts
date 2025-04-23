@@ -2,7 +2,7 @@
 
 import { db } from "@/db/db";
 import { Article, GenreToArticle, Like, StatusType } from "@/db/schema";
-import { and, desc, eq, inArray, ilike, notInArray } from "drizzle-orm";
+import { and, desc, eq, inArray, ilike, notInArray, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export interface Result {
@@ -53,6 +53,7 @@ export const getArticles = async (
   const count = await db.$count(
     Article,
     and(
+      ne(Article.status, "deleted"),
       status ? eq(Article.status, status) : undefined,
       search ? ilike(Article.title, `%${search}%`) : undefined,
       genreId && genreId !== 0
@@ -69,6 +70,7 @@ export const getArticles = async (
 
   const articles = await db.query.Article.findMany({
     where: and(
+      ne(Article.status, "deleted"),
       status && eq(Article.status, status),
       genreId && genreId !== 0
         ? inArray(
@@ -130,7 +132,7 @@ export const getArticles = async (
 
 export const getArticle = async (id: number) => {
   return await db.query.Article.findFirst({
-    where: eq(Article.id, id),
+    where: and(eq(Article.id, id), ne(Article.status, "deleted")),
     columns: {
       updatedAt: false,
     },
@@ -301,7 +303,10 @@ export const togglePublishArticle = async (id: number) => {
 
 export const deleteArticle = async (id: number) => {
   try {
-    await db.delete(Article).where(eq(Article.id, id));
+    await db
+      .update(Article)
+      .set({ status: "deleted" })
+      .where(eq(Article.id, id));
 
     revalidatePath("/admin");
     return { success: true };
