@@ -54,7 +54,7 @@ const AdminListItem = ({
   return (
     <div
       key={article.id}
-      className="bg-background p-4 rounded-lg flex items-center gap-4 hover:bg-primary-dark hover:text-background"
+      className="bg-background p-4 rounded-lg h-[148px] flex items-center gap-4 hover:bg-primary-dark hover:text-background"
     >
       <Link href={`/admin/article/${article.id}`}>
         <div className="flex gap-4">

@@ -21,7 +21,7 @@ export default async function Home({
   const user = await getCurrentUser({ withFullUser: true });
 
   return (
-    <div className="grid grid-cols-5 justify-items-center items-start">
+    <div className="flex flex-col max-md:gap-2 md:grid md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-5 justify-items-center items-start">
       <UserCard user={user}></UserCard>
       <ArticleList
         userId={user?.id}

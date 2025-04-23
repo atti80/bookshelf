@@ -65,7 +65,7 @@ const Article = ({
   };
 
   return (
-    <div className="bg-background p-8 flex flex-col items-center gap-8 rounded-md col-span-2">
+    <div className="bg-background p-4 md:p-8 flex flex-col items-center gap-8 rounded-md col-span-4 lg:col-span-3 xl:col-span-2">
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between mb-4">
           <Genres genres={article.genres}></Genres>
@@ -89,7 +89,6 @@ const Article = ({
               ) : (
                 <HeartIcon className="size-6 mr-1" />
               )}
-              {/* <span>{optimisticLikes}</span> */}
             </Button>
           </div>
         </div>
@@ -101,9 +100,9 @@ const Article = ({
         <h2>{article.title}</h2>
       </div>
       <div
-        className={`flex ${fullContent && "flex-col items-center"} gap-12 ${
-          !fullContent && "h-60"
-        }`}
+        className={`flex ${
+          fullContent && "flex-col items-center max-md:text-sm/4"
+        } gap-8 ${!fullContent && "h-56"}`}
       >
         <Image
           src={imageUrl}
@@ -111,25 +110,24 @@ const Article = ({
           height={200}
           alt={article.image ? article.image : "No image"}
           style={{ objectFit: "contain" }}
+          className="hidden lg:block"
         ></Image>
-        <div className="flex flex-col justify-between">
-          {fullContent ? (
-            <article className="whitespace-pre-line">{article.content}</article>
-          ) : (
-            <Link href={`/article/${article.id}`}>
-              <div
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                className="flex flex-col gap-4 h-full cursor-pointer"
-              >
-                <article className="line-clamp-8">
-                  {article.content.substring(0, 600)}
-                </article>
-                <ReadMore ref={readmoreRef}></ReadMore>
-              </div>
-            </Link>
-          )}
-        </div>
+        {fullContent ? (
+          <article className="whitespace-pre-line">{article.content}</article>
+        ) : (
+          <Link href={`/article/${article.id}`}>
+            <div
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              className="flex flex-col justify-between h-full cursor-pointer"
+            >
+              <article className="line-clamp-8">
+                {article.content.substring(0, 600)}
+              </article>
+              <ReadMore ref={readmoreRef}></ReadMore>
+            </div>
+          </Link>
+        )}
       </div>
       {fullContent && (
         <p className="font-light text-gray-400 self-end">

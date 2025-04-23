@@ -25,13 +25,13 @@ const Navbar = async ({
             <div className="bg-primary-dark w-2 h-2"></div>
           </div>
           <Link href={linkUrl ? linkUrl : "/"}>
-            <span className="text-xl flex items-center">
+            <span className="text-xl items-center hidden md:flex">
               {title ?? "bookshelf"}
             </span>
           </Link>
         </div>
         {showFilters && (
-          <div className="flex gap-8">
+          <div className="flex gap-2 lg:gap-8">
             <GenreSelectWrapper genres={genres}></GenreSelectWrapper>
             <SearchInputWrapper></SearchInputWrapper>
           </div>

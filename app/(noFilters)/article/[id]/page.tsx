@@ -10,9 +10,9 @@ const ArticlePage = async ({ params }: { params: Promise<{ id: number }> }) => {
   const article = await getArticle(id);
 
   return (
-    <div className="w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       {article && (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 px-4">
           <Article
             article={article}
             userId={user?.id}

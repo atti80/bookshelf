@@ -15,7 +15,7 @@ import { LogOutButton } from "./auth/LogoutButton";
 
 const UserCard = async ({ user }: { user: FullUser | null }) => {
   return (
-    <Card className="w-[70%] border-none">
+    <Card className="max-w-60 w-[90%] xl:w-[70%] border-none">
       <CardHeader>
         <CardTitle>{user ? `${user.name}` : "Guest"}</CardTitle>
         <CardDescription>
@@ -28,12 +28,16 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
           <Link href={"/favourites"}>
             <div className="flex items-center justify-between">
               <span>Favourites</span>
-              <span>{user.likes.length}</span>
+              <span className="md:max-xl:hidden inline">
+                {user.likes.length}
+              </span>
             </div>
           </Link>
           <div className="flex items-center justify-between">
             <span>Comments</span>
-            <span>{user.comments.length}</span>
+            <span className="md:max-xl:hidden inline">
+              {user.comments.length}
+            </span>
           </div>
         </CardContent>
       ) : (
@@ -43,13 +47,14 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
         {user ? (
           <>
             {user.isAdmin && (
-              <Button asChild variant="secondary" className="w-full">
+              <Button
+                asChild
+                variant="secondary"
+                className="w-full max-md:hidden"
+              >
                 <Link href={"/admin"}>Admin page</Link>
               </Button>
             )}
-            <Button asChild variant="secondary" className="w-full">
-              <Link href={"/private"}>Private page</Link>
-            </Button>
             <LogOutButton></LogOutButton>
           </>
         ) : (

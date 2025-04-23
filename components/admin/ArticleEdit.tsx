@@ -121,7 +121,7 @@ const ArticleEdit = ({
   const genres = form.watch("genres");
 
   return (
-    <div className="w-4xl mx-auto bg-background p-8 rounded-2xl flex flex-col gap-8">
+    <div className="max-w-4xl mx-auto bg-background p-8 rounded-2xl flex flex-col gap-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField

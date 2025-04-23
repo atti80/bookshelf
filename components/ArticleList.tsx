@@ -31,10 +31,10 @@ const ArticleList = async ({
   const totalPages = Math.ceil(result.count / ARTICLES_PER_PAGE);
 
   return (
-    <div className="px-8 col-start-2 col-span-4">
+    <div className="col-start-2 col-span-4 lg:col-span-6 xl:col-span-4">
       {articles.length ? (
-        <div className="flex flex-col items-center">
-          <div className="grid grid-cols-4 gap-8">
+        <div className="flex flex-col items-center px-1 xl:px-2 2xl:px-4">
+          <div className="grid grid-cols-4 lg:max-xl:grid-cols-6 gap-4 2xl:gap-8">
             {articles.map((article) => (
               <Article
                 key={article.id}
