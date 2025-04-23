@@ -9,7 +9,9 @@ type ArticleListProps = {
   page: number;
 };
 
-const ARTICLES_PER_PAGE = 3;
+const ARTICLES_PER_PAGE: number = parseInt(
+  process.env.ARTICLES_PER_PAGE ?? "10"
+);
 
 const ArticleList = async ({
   userId,

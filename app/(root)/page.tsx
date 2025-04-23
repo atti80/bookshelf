@@ -20,8 +20,6 @@ export default async function Home({
   const page = params["page"] ? parseInt(params["page"] as string) : 1;
   const user = await getCurrentUser({ withFullUser: true });
 
-  console.log(genreId, searchText, page);
-
   return (
     <div className="grid grid-cols-5 justify-items-center items-start">
       <UserCard user={user}></UserCard>
