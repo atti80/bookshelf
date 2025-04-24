@@ -33,12 +33,12 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
               </span>
             </div>
           </Link>
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <span>Comments</span>
             <span className="md:max-xl:hidden inline">
               {user.comments.length}
             </span>
-          </div>
+          </div> */}
         </CardContent>
       ) : (
         <></>
