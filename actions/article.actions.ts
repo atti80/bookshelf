@@ -15,7 +15,8 @@ export const getArticles = async (
   genreId?: number,
   search?: string,
   limit?: number,
-  offset?: number
+  offset?: number,
+  userId?: number
 ): Promise<{
   count: number;
   articles: {
@@ -64,6 +65,15 @@ export const getArticles = async (
               .from(GenreToArticle)
               .where(eq(GenreToArticle.genreId, genreId))
           )
+        : undefined,
+      userId
+        ? inArray(
+            Article.id,
+            db
+              .select({ id: Like.articleId })
+              .from(Like)
+              .where(eq(Like.userId, userId))
+          )
         : undefined
     )
   );
@@ -81,7 +91,16 @@ export const getArticles = async (
               .where(eq(GenreToArticle.genreId, genreId))
           )
         : undefined,
-      search ? ilike(Article.title, `%${search}%`) : undefined
+      search ? ilike(Article.title, `%${search}%`) : undefined,
+      userId
+        ? inArray(
+            Article.id,
+            db
+              .select({ id: Like.articleId })
+              .from(Like)
+              .where(eq(Like.userId, userId))
+          )
+        : undefined
     ),
     columns: {
       linkUrl: false,

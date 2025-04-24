@@ -18,6 +18,7 @@ export default async function Home({
   const genreId = params["genre"] ? parseInt(params["genre"] as string) : 0;
   const searchText = params["search"] as string;
   const page = params["page"] ? parseInt(params["page"] as string) : 1;
+  const favourites = params["favourites"] === "true";
   const user = await getCurrentUser({ withFullUser: true });
 
   return (
@@ -28,6 +29,7 @@ export default async function Home({
         genreId={genreId}
         searchText={searchText}
         page={page}
+        favourites={favourites}
       ></ArticleList>
     </div>
   );

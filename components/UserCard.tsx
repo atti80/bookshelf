@@ -25,7 +25,7 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
       </CardHeader>
       {user ? (
         <CardContent>
-          <Link href={"/favourites"}>
+          <Link href={"/?favourites=true"}>
             <div className="flex items-center justify-between">
               <span>Favourites</span>
               <span className="md:max-xl:hidden inline">

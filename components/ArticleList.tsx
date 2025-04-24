@@ -7,6 +7,7 @@ type ArticleListProps = {
   genreId: number;
   searchText: string;
   page: number;
+  favourites: boolean;
 };
 
 const ARTICLES_PER_PAGE: number = parseInt(
@@ -18,13 +19,15 @@ const ArticleList = async ({
   genreId,
   searchText,
   page,
+  favourites,
 }: ArticleListProps) => {
   const result = await getArticles(
     "published",
     genreId,
     searchText,
     ARTICLES_PER_PAGE,
-    page ? (page - 1) * ARTICLES_PER_PAGE : 0
+    page ? (page - 1) * ARTICLES_PER_PAGE : 0,
+    favourites ? userId : undefined
   );
 
   const articles = result.articles;
