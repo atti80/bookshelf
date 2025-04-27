@@ -60,10 +60,10 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
         ) : (
           <>
             <Button variant="secondary" asChild className="w-full">
-              <Link href={"/sign-in"}>Sign in</Link>
+              <Link href={"/sign-in"}>Log in</Link>
             </Button>
             <Button variant="secondary" asChild className="w-full">
-              <Link href={"/sign-up"}>Sign up</Link>
+              <Link href={"/sign-up"}>Register</Link>
             </Button>
           </>
         )}

@@ -18,7 +18,7 @@ export default async function SignIn({
     <div className="container mx-auto p-4 max-w-[750px]">
       <Card>
         <CardHeader>
-          <CardTitle>Sign In</CardTitle>
+          <CardTitle>Log In</CardTitle>
           {oauthError && (
             <CardDescription className="text-destructive">
               {oauthError}

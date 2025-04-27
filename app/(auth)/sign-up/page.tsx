@@ -6,7 +6,7 @@ export default function SignUp() {
     <div className="container mx-auto p-4 max-w-[750px]">
       <Card>
         <CardHeader>
-          <CardTitle>Sign Up</CardTitle>
+          <CardTitle>Register</CardTitle>
         </CardHeader>
         <CardContent>
           <SignUpForm />

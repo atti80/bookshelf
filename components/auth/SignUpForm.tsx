@@ -91,10 +91,10 @@ export function SignUpForm() {
         />
         <div className="flex gap-4 justify-end">
           <Button asChild variant="link">
-            <Link href="/sign-in">Sign In</Link>
+            <Link href="/sign-in">Log in</Link>
           </Button>
           <Button type="submit" variant="secondary">
-            Sign Up
+            Register
           </Button>
         </div>
       </form>
