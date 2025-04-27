@@ -89,13 +89,18 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
-        <div className="flex gap-4 justify-end">
+        <div className="flex justify-between items-center">
           <Button asChild variant="link">
-            <Link href="/sign-in">Log in</Link>
+            <Link href="/">Back</Link>
           </Button>
-          <Button type="submit" variant="secondary">
-            Register
-          </Button>
+          <div className="flex gap-4 justify-end">
+            <Button asChild variant="link">
+              <Link href="/sign-in">Log in</Link>
+            </Button>
+            <Button type="submit" variant="secondary">
+              Register
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

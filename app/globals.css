@@ -52,6 +52,9 @@
   h2 {
     @apply text-4xl font-medium;
   }
+  h3 {
+    @apply text-2xl font-medium;
+  }
 }
 
 body {

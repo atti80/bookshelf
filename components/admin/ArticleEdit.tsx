@@ -124,6 +124,26 @@ const ArticleEdit = ({
     <div className="max-w-4xl mx-auto bg-background p-8 rounded-2xl flex flex-col gap-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="flex justify-between items-center">
+            <h3>{article ? "Update article" : "New article"}</h3>
+            <div className="flex justify-end gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="cursor-pointer"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="outline"
+                className="cursor-pointer"
+              >
+                Save
+              </Button>
+            </div>
+          </div>
           <FormField
             control={form.control}
             name="genres"
@@ -202,19 +222,6 @@ const ArticleEdit = ({
               </FormItem>
             )}
           />
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="cursor-pointer"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" variant="outline" className="cursor-pointer">
-              Save
-            </Button>
-          </div>
         </form>
       </Form>
     </div>
