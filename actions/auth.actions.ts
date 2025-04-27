@@ -19,6 +19,7 @@ import {
   UserSession,
 } from "@/lib/session";
 import { redis } from "@/lib/redis";
+import { updateLastLogin } from "./user.actions";
 // import { getOAuthClient } from "../core/oauth/base";
 
 export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
@@ -33,6 +34,7 @@ export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
       password: true,
       salt: true,
       isAdmin: true,
+      lastLogin: true,
     },
     where: eq(User.email, data.email),
   });
@@ -49,7 +51,12 @@ export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
 
   if (!isCorrectPassword) return "Incorrect password";
 
-  await createUserSession({ id: user.id, isAdmin: user.isAdmin ?? false });
+  await updateLastLogin(user.id);
+  await createUserSession({
+    id: user.id,
+    isAdmin: user.isAdmin ?? false,
+    lastLogin: user.lastLogin ? user.lastLogin.getTime() : 0,
+  });
 
   redirect("/");
 }
@@ -76,12 +83,17 @@ export async function signUp(unsafeData: z.infer<typeof signUpSchema>) {
         email: data.email,
         password: hashedPassword,
         salt,
+        lastLogin: new Date(),
       })
       .returning({ id: User.id, isAdmin: User.isAdmin });
 
     if (user == null) return "Unable to create account";
 
-    await createUserSession({ id: user.id, isAdmin: user.isAdmin ?? false });
+    await createUserSession({
+      id: user.id,
+      isAdmin: user.isAdmin ?? false,
+      lastLogin: 0,
+    });
   } catch (e) {
     console.log(e);
     return `Unable to create account: ${e}`;

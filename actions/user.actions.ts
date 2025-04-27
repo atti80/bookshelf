@@ -45,8 +45,9 @@ async function _getCurrentUser({
 
   if (withFullUser) {
     const fullUser = await getUserFromDb(user.id);
-    // This should never happen
+
     if (fullUser == null) throw new Error("User not found in database");
+    fullUser.lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
     return fullUser;
   }
 
@@ -57,7 +58,13 @@ export const getCurrentUser = cache(_getCurrentUser);
 
 function getUserFromDb(id: number) {
   return db.query.User.findFirst({
-    columns: { id: true, email: true, isAdmin: true, name: true },
+    columns: {
+      id: true,
+      email: true,
+      isAdmin: true,
+      name: true,
+      lastLogin: true,
+    },
     with: {
       likes: {
         columns: { articleId: true },
@@ -69,3 +76,14 @@ function getUserFromDb(id: number) {
     where: eq(User.id, id),
   });
 }
+
+export const updateLastLogin = async (id: number) => {
+  try {
+    await db.update(User).set({ lastLogin: new Date() }).where(eq(User.id, id));
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating last login:", error);
+    return { success: false, error: "Failed to update last login" };
+  }
+};

@@ -9,6 +9,7 @@ const COOKIE_SESSION_KEY = "session-id";
 const sessionSchema = z.object({
   id: z.number(),
   isAdmin: z.boolean(),
+  lastLogin: z.number(),
 });
 
 export type UserSession = z.infer<typeof sessionSchema>;

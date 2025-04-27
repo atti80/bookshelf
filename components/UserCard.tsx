@@ -12,6 +12,7 @@ import { Separator } from "./ui/separator";
 import Link from "next/link";
 import { FullUser } from "@/actions/user.actions";
 import { LogOutButton } from "./auth/LogoutButton";
+import { formatDistanceToNowStrict } from "date-fns";
 
 const UserCard = async ({ user }: { user: FullUser | null }) => {
   return (
@@ -20,6 +21,13 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
         <CardTitle>{user ? `${user.name}` : "Guest"}</CardTitle>
         <CardDescription>
           {user && `${user.isAdmin ? "admin" : "reader"}`}
+          {user && (
+            <p className="text-xs">{`last login ${
+              user.lastLogin
+                ? formatDistanceToNowStrict(user.lastLogin).concat(" ago")
+                : "-"
+            }`}</p>
+          )}
         </CardDescription>
         <Separator></Separator>
       </CardHeader>
