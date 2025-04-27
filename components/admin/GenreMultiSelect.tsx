@@ -84,7 +84,12 @@ export function GenreMultiSelect({ value, onChange }: GenreMultiSelectProps) {
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-[300px] p-0">
-          <Command>
+          <Command
+            filter={(value, search) => {
+              if (value.toLowerCase().includes(search.toLowerCase())) return 1;
+              return 0;
+            }}
+          >
             <CommandInput placeholder="Search genres..." />
             <CommandEmpty>No genre found.</CommandEmpty>
             <CommandList>
@@ -92,6 +97,7 @@ export function GenreMultiSelect({ value, onChange }: GenreMultiSelectProps) {
                 {genres.map((genre) => (
                   <CommandItem
                     key={genre.id}
+                    value={genre.name}
                     onSelect={() => toggleGenre(genre)}
                     className="flex justify-between items-center"
                   >
