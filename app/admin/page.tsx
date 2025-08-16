@@ -1,8 +1,20 @@
 import AdminList from "@/components/admin/AdminList";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getUserFromSession } from "@/lib/session";
 
-const AdminPage = () => {
+const AdminPage = async ({ cookies }: { cookies: any }) => {
+  const user = await getUserFromSession(cookies);
+
+  if (!user) {
+    redirect("/");
+  }
+
+  if (!user.isAdmin) {
+    redirect('/sign-in');
+  }
+
   return (
     <div className="flex max-sm:flex-col lg:grid lg:grid-cols-5">
       <div className="w-full max-sm:justify-between max-sm:px-4 sm:max-w-[180px] flex sm:flex-col gap-2 py-8 lg:p-8">

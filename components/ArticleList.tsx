@@ -1,6 +1,9 @@
 import { getArticles } from "@/actions/article.actions";
 import Article from "./Article";
 import PaginationWrapper from "./Pagination";
+import { redirect } from "next/navigation";
+import { getUserFromSession } from "@/lib/session";
+import { cookies } from "next/headers";
 
 type ArticleListProps = {
   userId: number | undefined;
@@ -21,6 +24,14 @@ const ArticleList = async ({
   page,
   favourites,
 }: ArticleListProps) => {
+  if (favourites) {
+    const user = await getUserFromSession(await cookies());
+
+    if (!user) {
+      redirect("/sign-in");
+    }
+  }
+
   const result = await getArticles(
     "published",
     genreId,
