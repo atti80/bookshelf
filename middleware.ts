@@ -1,8 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getSessionIdFromRequest } from "@/lib/session-cookie";
 
 const readerRoutes = ["/favourites"];
 const adminRoutes = ["/admin"];
+const COOKIE_SESSION_KEY = "session-id";
+
+function getSessionIdFromRequest(request: NextRequest): string | null {
+  return request.cookies.get(COOKIE_SESSION_KEY)?.value ?? null;
+}
 
 export function middleware(request: NextRequest) {
   const sessionId = getSessionIdFromRequest(request);
