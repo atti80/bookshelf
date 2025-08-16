@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUserFromSession } from "@/lib/session";
+import { cookies } from 'next/headers';
 
-const AdminPage = async ({ cookies }: { cookies: any }) => {
-  const user = await getUserFromSession(cookies);
+const AdminPage = async () => {
+  const user = await getUserFromSession(await cookies());
 
   if (!user) {
     redirect("/");
