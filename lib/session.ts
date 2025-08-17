@@ -51,15 +51,7 @@ export async function updateUserSessionExpiration(
 ) {
   const sessionId = cookies.get(COOKIE_SESSION_KEY)?.value;
   if (sessionId == null) return null;
-
-  const user = await getUserBySessionId(sessionId);
-  if (user == null) return;
-
-  const serializedUser = JSON.stringify(sessionSchema.parse(user));
-  await redis.set(`session:${sessionId}`, serializedUser, {
-    ex: SESSION_EXPIRATION_SECONDS,
-  });
-  setCookie(sessionId);
+  await redis.expire(`session:${sessionId}`, SESSION_EXPIRATION_SECONDS);
 }
 
 export async function removeUserFromSession() {

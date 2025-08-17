@@ -2,11 +2,12 @@ import AdminList from "@/components/admin/AdminList";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getUserFromSession } from "@/lib/session";
+import { getUserFromSession, updateUserSessionExpiration } from "@/lib/session";
 import { cookies } from 'next/headers';
 
 const AdminPage = async () => {
-  const user = await getUserFromSession(await cookies());
+  const cookieStore = await cookies();
+  const user = await getUserFromSession(cookieStore);
 
   if (!user) {
     redirect("/");
@@ -15,6 +16,8 @@ const AdminPage = async () => {
   if (!user.isAdmin) {
     redirect('/sign-in');
   }
+
+  updateUserSessionExpiration(cookieStore);
 
   return (
     <div className="flex max-sm:flex-col lg:grid lg:grid-cols-5">

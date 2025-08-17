@@ -2,7 +2,7 @@ import { getArticles } from "@/actions/article.actions";
 import Article from "./Article";
 import PaginationWrapper from "./Pagination";
 import { redirect } from "next/navigation";
-import { getUserFromSession } from "@/lib/session";
+import { getUserFromSession, updateUserSessionExpiration } from "@/lib/session";
 import { cookies } from "next/headers";
 
 type ArticleListProps = {
@@ -25,11 +25,14 @@ const ArticleList = async ({
   favourites,
 }: ArticleListProps) => {
   if (favourites) {
-    const user = await getUserFromSession(await cookies());
+    const cookieStore = await cookies();
+    const user = await getUserFromSession(cookieStore);
 
     if (!user) {
       redirect("/sign-in");
     }
+
+    updateUserSessionExpiration(cookieStore);
   }
 
   const result = await getArticles(
