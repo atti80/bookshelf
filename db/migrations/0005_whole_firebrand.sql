@@ -1,1 +1,0 @@
-ALTER TABLE "commentTable" DROP CONSTRAINT "commentTable_userId_articleId_pk";
