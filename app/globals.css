@@ -61,6 +61,12 @@ body {
   font-family: var(--font-lora), Helvetica, sans-serif;
 }
 
+.aligncenter {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
