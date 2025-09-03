@@ -77,5 +77,7 @@ VALUES
   ('unable_register', 'en', 'Unable to create account'),
   ('unable_register', 'hu', 'Regisztráció nem sikerült'),
   ('categories', 'en', 'Categories'),
-  ('categories', 'hu', 'Kategóriák')
+  ('categories', 'hu', 'Kategóriák'),
+  ('no_articles', 'en', 'No articles found'),
+  ('no_articles', 'hu', 'Nincs találat')
 ON CONFLICT ("translationKey", "languageCode") DO NOTHING;

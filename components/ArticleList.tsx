@@ -73,7 +73,7 @@ const ArticleList = async ({
           <PaginationWrapper totalPages={totalPages}></PaginationWrapper>
         </div>
       ) : (
-        <h2>No articles found</h2>
+        <h2 className="text-foreground mt-8">{translations["no_articles"]}</h2>
       )}
     </div>
   );

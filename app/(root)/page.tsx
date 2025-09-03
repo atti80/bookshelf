@@ -24,6 +24,7 @@ const translations = await getTranslations([
   "favorites",
   "categories",
   "all_genres",
+  "no_articles",
 ]);
 
 export default async function Home({
