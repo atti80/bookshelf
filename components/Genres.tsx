@@ -1,16 +1,12 @@
-import { getArticles } from "@/actions/article.actions";
 import Link from "next/link";
 
-type Articles = Awaited<ReturnType<typeof getArticles>>;
-type Genre = Articles["articles"][number]["genres"][number];
-
-const Genres = ({ genres }: { genres: Genre[] }) => {
+const Genres = ({ genres }: { genres: { id: number; name: string }[] }) => {
   return (
     <div className="flex">
       {genres.map((genre) => (
-        <Link href={`/?genre=${genre.genreId}`} key={genre.genreId}>
+        <Link href={`/?category=${genre.id}`} key={genre.id}>
           <div className="bg-primary-light rounded-md px-4 py-1 text-sm text-background mr-2">
-            {genre.genre.name}
+            {genre.name}
           </div>
         </Link>
       ))}

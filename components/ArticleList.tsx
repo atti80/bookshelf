@@ -1,16 +1,19 @@
-import { getArticles } from "@/actions/article.actions";
 import Article from "./Article";
 import PaginationWrapper from "./Pagination";
 import { redirect } from "next/navigation";
 import { getUserFromSession, updateUserSessionExpiration } from "@/lib/session";
 import { cookies } from "next/headers";
+import { Post, fetchPosts } from "@/actions/wordpress.actions";
+import { getLikesByUserId } from "@/actions/like.actions";
 
 type ArticleListProps = {
   userId: number | undefined;
-  genreId: number;
+  categoryId: number | undefined;
+  tagId: number | undefined;
   searchText: string;
   page: number;
   favourites: boolean;
+  translations: Record<string, string>;
 };
 
 const ARTICLES_PER_PAGE: number = parseInt(
@@ -19,10 +22,12 @@ const ARTICLES_PER_PAGE: number = parseInt(
 
 const ArticleList = async ({
   userId,
-  genreId,
+  categoryId,
+  tagId,
   searchText,
   page,
   favourites,
+  translations,
 }: ArticleListProps) => {
   if (favourites) {
     const cookieStore = await cookies();
@@ -35,28 +40,33 @@ const ArticleList = async ({
     updateUserSessionExpiration(cookieStore);
   }
 
-  const result = await getArticles(
-    "published",
-    genreId,
-    searchText,
+  const likes = userId ? await getLikesByUserId(userId) : [];
+  const postsResponse = await fetchPosts(
+    page,
     ARTICLES_PER_PAGE,
-    page ? (page - 1) * ARTICLES_PER_PAGE : 0,
-    favourites ? userId : undefined
+    categoryId,
+    tagId,
+    searchText,
+    favourites ? likes.map((like) => like.articleId) : undefined
   );
 
-  const articles = result.articles;
-  const totalPages = Math.ceil(result.count / ARTICLES_PER_PAGE);
+  postsResponse.posts.forEach((post) => {
+    post.isLiked = likes.some((like) => like.articleId === post.id);
+  });
+
+  const totalPages = Math.ceil(postsResponse.count / ARTICLES_PER_PAGE);
 
   return (
     <div className="col-start-2 col-span-4 lg:col-span-6 xl:col-span-4">
-      {articles.length ? (
+      {postsResponse.posts.length ? (
         <div className="flex flex-col items-center px-1 xl:px-2 2xl:px-4">
           <div className="grid grid-cols-4 lg:max-xl:grid-cols-6 gap-4 2xl:gap-8">
-            {articles.map((article) => (
+            {postsResponse.posts.map((post: Post) => (
               <Article
-                key={article.id}
-                article={article}
+                key={post.id}
+                post={post}
                 userId={userId}
+                translations={translations}
               ></Article>
             ))}
           </div>

@@ -1,52 +1,36 @@
 "use client";
 
-import { getArticles, toggleLike } from "@/actions/article.actions";
+import { toggleLike } from "@/actions/like.actions";
 import Image from "next/image";
-import Genres from "./Genres";
 import ReadMore from "./ReadMore";
-import { useEffect, useState, useRef } from "react";
-import { HeartIcon, MessageCircleIcon } from "lucide-react";
+import { useState, useRef } from "react";
+import { HeartIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { format } from "date-fns";
 import { ReadMoreHandle } from "./ReadMore";
 import Link from "next/link";
-
-type Articles = Awaited<ReturnType<typeof getArticles>>;
-type Article = Articles["articles"][number];
-
-const BUCKET_URL = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
+import { Post } from "@/actions/wordpress.actions";
 
 const Article = ({
-  article,
+  post: post,
   userId,
-  fullContent = false,
+  translations,
 }: {
-  article: Article;
+  post: Post;
   userId: number | undefined;
-  fullContent?: boolean;
+  translations: Record<string, string>;
 }) => {
   const readmoreRef = useRef<ReadMoreHandle>(null);
-  const [imageUrl, setImageUrl] = useState("/images/bookshelf.jpg");
   const [isLiking, setIsLiking] = useState(false);
-  const [hasLiked, setHasLiked] = useState(
-    article.likes.some((like) => like.userId === userId)
-  );
-  const [optimisticLikes, setOptmisticLikes] = useState(article.likes.length);
-
-  useEffect(() => {
-    if (BUCKET_URL) setImageUrl(`${BUCKET_URL}/${article.image}`);
-  }, []);
+  const [hasLiked, setHasLiked] = useState(post.isLiked);
 
   const handleLike = async () => {
     if (!userId || isLiking) return;
     try {
       setIsLiking(true);
       setHasLiked((prev) => !prev);
-      setOptmisticLikes((prev) => prev + (hasLiked ? -1 : 1));
-      await toggleLike(userId, article.id);
+      await toggleLike(userId, post.id);
     } catch (error) {
-      setOptmisticLikes(article.likes.length);
-      setHasLiked(article.likes.some((like) => like.userId === userId));
+      setHasLiked(post.isLiked);
     } finally {
       setIsLiking(false);
     }
@@ -65,75 +49,71 @@ const Article = ({
   };
 
   return (
-    <div className="bg-background p-4 md:p-8 flex flex-col items-center gap-8 rounded-md col-span-4 lg:col-span-3 xl:col-span-2">
-      <div className="flex flex-col w-full">
-        <div className="flex items-center justify-between mb-4">
-          <Genres genres={article.genres}></Genres>
-          <div className="flex gap-8">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`text-muted-foreground gap-2 ${
-                hasLiked
-                  ? "text-primary hover:text-primary-light hover:bg-transparent"
-                  : "hover:text-primary hover:bg-transparent"
-              }`}
-              disabled={isLiking}
-              title={
-                userId ? (hasLiked ? "Unlike" : "Like") : "Sign in to like"
-              }
-              onClick={handleLike}
-            >
-              {hasLiked ? (
-                <HeartIcon className="size-8 fill-current" />
-              ) : (
-                <HeartIcon className="size-6 mr-1" />
-              )}
-            </Button>
+    <div className="bg-background p-4 md:p-8 flex flex-col items-center rounded-md col-span-4 lg:col-span-3 xl:col-span-2">
+      <div className="flex w-full gap-4 justify-between">
+        <Link href={`/article/${post.id}`}>
+          <h2
+            dangerouslySetInnerHTML={{ __html: post.title }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          ></h2>
+        </Link>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={`text-muted-foreground gap-2
+                 ${
+                   hasLiked
+                     ? "text-primary hover:text-primary-light hover:bg-transparent"
+                     : "hover:text-primary hover:bg-transparent"
+                 }`}
+          disabled={isLiking}
+          title={
+            userId
+              ? hasLiked
+                ? translations["unlike"]
+                : translations["like"]
+              : translations["sign_in_to_like"]
+          }
+          onClick={handleLike}
+        >
+          {hasLiked ? (
+            <HeartIcon className="size-8 fill-current" />
+          ) : (
+            <HeartIcon className="size-6 mr-1" />
+          )}
+        </Button>
+      </div>
+      <Link href={`/article/${post.id}`}>
+        <div
+          className="flex flex-col w-full gap-8 mt-4"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className={"flex gap-8 h-56"}>
+            {post.image && (
+              <Image
+                src={post.image}
+                width={200}
+                height={200}
+                alt={post.image ? post.image : "No image"}
+                style={{ objectFit: "contain" }}
+                className="hidden lg:block"
+              ></Image>
+            )}
+            <div className="flex flex-col justify-between h-full cursor-pointer">
+              <article
+                className="line-clamp-8"
+                dangerouslySetInnerHTML={{ __html: post.excerpt }}
+              ></article>
+              <ReadMore
+                ref={readmoreRef}
+                readMoreText={translations["read_more"] || "Read more"}
+              ></ReadMore>
+            </div>
           </div>
         </div>
-        {fullContent && article.publishedAt && (
-          <p className="font-light text-gray-400">
-            {format(article.publishedAt, "dd MMM yyyy")}
-          </p>
-        )}
-        <h2>{article.title}</h2>
-      </div>
-      <div
-        className={`flex ${
-          fullContent && "flex-col items-center max-md:text-sm/4"
-        } gap-8 ${!fullContent && "h-56"}`}
-      >
-        <Image
-          src={imageUrl}
-          width={200}
-          height={200}
-          alt={article.image ? article.image : "No image"}
-          style={{ objectFit: "contain" }}
-          className="hidden lg:block"
-        ></Image>
-        {fullContent ? (
-          <article className="whitespace-pre-line">{article.content}</article>
-        ) : (
-          <Link href={`/article/${article.id}`}>
-            <div
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              className="flex flex-col justify-between h-full cursor-pointer"
-            >
-              <article className="line-clamp-8">
-                {article.content.substring(0, 600)}
-              </article>
-              <ReadMore ref={readmoreRef}></ReadMore>
-            </div>
-          </Link>
-        )}
-      </div>
-      {fullContent && (
-        <p className="font-light text-gray-400 self-end">
-          by {article.author.name}
-        </p>
-      )}
+      </Link>
     </div>
   );
 };

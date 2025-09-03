@@ -1,12 +1,13 @@
 import axios from "axios";
 
-const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL;
+const WORDPRESS_API_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2`;
 
 export interface Post {
   id: number;
   title: string;
   excerpt: string;
   image: string | null;
+  isLiked: boolean;
 }
 
 export interface PostDetails {
@@ -23,11 +24,7 @@ export interface PostDetails {
     id: number;
     name: string;
   }[];
-  likes: {
-    userId: number;
-    articleId: number;
-    createdAt: Date | null;
-  }[];
+  isLiked: boolean;
   comments: {
     userId: number;
     articleId: number;
@@ -40,7 +37,9 @@ export const fetchPosts = async (
   page: number = 1,
   perPage: number = 10,
   categoryId?: number,
-  tagId?: number
+  tagId?: number,
+  searchText?: string,
+  postIds?: number[]
 ): Promise<{ posts: Post[]; count: number }> => {
   try {
     const params = {
@@ -48,6 +47,8 @@ export const fetchPosts = async (
       per_page: perPage,
       ...(categoryId && { categories: categoryId }),
       ...(tagId && { tags: tagId }),
+      ...(searchText && { search: searchText }),
+      ...(postIds && { include: postIds.join(",") }),
     };
     const response = await axios.get(`${WORDPRESS_API_URL}/posts`, {
       params,
@@ -70,8 +71,9 @@ export const fetchPosts = async (
       title: post.title.rendered,
       excerpt: post.excerpt.rendered,
       image:
-        media.data.find((m: any) => m.id === post.featured_media)?.guid
-          .rendered || null,
+        media.data.find((m: any) => m.id === post.featured_media)?.source_url ||
+        null,
+      isLiked: false,
     }));
 
     return { posts, count: parseInt(response.headers["x-wp-total"]) };
@@ -106,7 +108,7 @@ export const fetchPostDetails = async (
         id: tag.id,
         name: tag.name,
       })),
-      likes: [],
+      isLiked: false,
       comments: [],
     };
   } catch (error) {

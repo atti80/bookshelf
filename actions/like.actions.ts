@@ -1,7 +1,33 @@
+"use server";
+
 import { db } from "@/db/db";
 import { Like } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+
+export const getLikesByUserId = async (userId: number) => {
+  try {
+    const likes = db.query.Like.findMany({
+      where: eq(Like.userId, userId),
+    });
+    return likes;
+  } catch (error) {
+    console.error("Failed to fetch likes:", error);
+    return [];
+  }
+};
+
+export const getLikesByArticleId = async (articleId: number) => {
+  try {
+    const likes = await db.query.Like.findMany({
+      where: eq(Like.articleId, articleId),
+    });
+    return likes;
+  } catch (error) {
+    console.error("Failed to fetch likes:", error);
+    return [];
+  }
+};
 
 export const toggleLike = async (userId: number, articleId: number) => {
   try {

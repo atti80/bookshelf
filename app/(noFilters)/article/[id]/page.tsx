@@ -1,23 +1,26 @@
-import { getArticle } from "@/actions/article.actions";
 import { getCurrentUser } from "@/actions/user.actions";
-import Article from "@/components/Article";
+import { fetchPostDetails } from "@/actions/wordpress.actions";
+import ArticleDetails from "@/components/ArticleDetails";
 import CommentSection from "@/components/CommentSection";
 import { Toaster } from "@/components/ui/sonner";
 
 const ArticlePage = async ({ params }: { params: Promise<{ id: number }> }) => {
   const { id } = await params;
   const user = await getCurrentUser({ withFullUser: true });
-  const article = await getArticle(id);
+  const post = await fetchPostDetails(id);
+  post.isLiked = user
+    ? user.likes.some((like) => like.articleId === post.id)
+    : false;
 
   return (
     <div className="max-w-4xl mx-auto">
-      {article && (
+      {post && (
         <div className="flex flex-col gap-4 px-4">
-          <Article
-            article={article}
+          <ArticleDetails
+            post={post}
             userId={user?.id}
             fullContent={true}
-          ></Article>
+          ></ArticleDetails>
           <CommentSection
             articleId={id}
             userId={user?.id}
