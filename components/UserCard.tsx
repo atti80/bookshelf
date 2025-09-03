@@ -14,15 +14,20 @@ import { FullUser } from "@/actions/user.actions";
 import { LogOutButton } from "./auth/LogoutButton";
 import { formatDistanceToNowStrict } from "date-fns";
 
-const UserCard = async ({ user }: { user: FullUser | null }) => {
+const UserCard = async ({
+  user,
+  translations,
+}: {
+  user: FullUser | null;
+  translations: Record<string, string>;
+}) => {
   return (
-    <Card className="max-w-60 w-[90%] xl:w-[70%] border-none">
+    <Card className="max-w-900 w-[90%] xl:w-[80%] border-none">
       <CardHeader>
-        <CardTitle>{user ? `${user.name}` : "Guest"}</CardTitle>
+        <CardTitle>{user ? `${user.name}` : translations["guest"]}</CardTitle>
         <CardDescription>
-          {user && `${user.isAdmin ? "admin" : "reader"}`}
           {user && (
-            <p className="text-xs">{`last login ${
+            <p className="text-xs">{`${translations["last_login"]} ${
               user.lastLogin
                 ? formatDistanceToNowStrict(user.lastLogin).concat(" ago")
                 : "-"
@@ -35,7 +40,7 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
         <CardContent>
           <Link href={"/?favourites=true"}>
             <div className="flex items-center justify-between">
-              <span>Favourites</span>
+              <span>{translations["favorites"]}</span>
               <span className="md:max-xl:hidden inline">
                 {user.likes.length}
               </span>
@@ -53,25 +58,14 @@ const UserCard = async ({ user }: { user: FullUser | null }) => {
       )}
       <CardFooter className="flex-col gap-2">
         {user ? (
-          <>
-            {user.isAdmin && (
-              <Button
-                asChild
-                variant="secondary"
-                className="w-full max-md:hidden"
-              >
-                <Link href={"/admin"}>Admin page</Link>
-              </Button>
-            )}
-            <LogOutButton></LogOutButton>
-          </>
+          <LogOutButton text={translations["sign_out"]}></LogOutButton>
         ) : (
           <>
             <Button variant="secondary" asChild className="w-full">
-              <Link href={"/sign-in"}>Log in</Link>
+              <Link href={"/sign-in"}>{translations["sign_in"]}</Link>
             </Button>
             <Button variant="secondary" asChild className="w-full">
-              <Link href={"/sign-up"}>Register</Link>
+              <Link href={"/sign-up"}>{translations["register"]}</Link>
             </Button>
           </>
         )}

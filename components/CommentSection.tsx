@@ -20,8 +20,21 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
+import { getTranslations } from "@/actions/translation.actions";
 
 type Comments = Awaited<ReturnType<typeof getComments>>;
+
+const translations = await getTranslations([
+  "sign_in_to_comment",
+  "no_comments",
+  "comments",
+  "comment",
+  "delete",
+  "delete_confirm",
+  "cancel",
+  "submit",
+  "comment_placeholder",
+]);
 
 const CommentSection = ({
   articleId,
@@ -51,7 +64,7 @@ const CommentSection = ({
       setIsCommenting(true);
       const result = await createComment(articleId, userId, commentText.trim());
       if (result.success) {
-        toast.success("Comment posted successfully");
+        // toast.success("Comment posted successfully");
         if (result.data) {
           setComments((prev) => [
             {
@@ -78,7 +91,7 @@ const CommentSection = ({
         setComments((prev) =>
           prev.filter((comment) => comment.id !== commentId)
         );
-        toast.success("Comment deleted successfully");
+        // toast.success("Comment deleted successfully");
       }
     } catch (error) {
       toast.error("Failed to delete comment");
@@ -87,27 +100,13 @@ const CommentSection = ({
 
   return (
     <div className="bg-background rounded-md flex flex-col p-4 gap-4">
-      {userId && (
-        <div className="flex items-end gap-4">
-          <Textarea
-            placeholder="Type your comment here..."
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-          ></Textarea>
-          <Button
-            variant="secondary"
-            onClick={handleCommentSubmit}
-            disabled={!commentText.trim() || isCommenting}
-          >
-            Submit
-          </Button>
-        </div>
-      )}
-      {comments.length > 0 && (
+      {comments.length > 0 ? (
         <>
-          <h3 className="mt-8">Comments</h3>
+          <h3 className="mt-8">{translations["comments"]}</h3>
           <Separator></Separator>
         </>
+      ) : (
+        <h3>{translations["no_comments"]}</h3>
       )}
       {comments.map((comment) => (
         <div key={comment.id} className="flex items-center justify-between">
@@ -121,18 +120,20 @@ const CommentSection = ({
                 <Button
                   variant="outline"
                   className="hover:cursor-pointer text-foreground"
-                  title="Delete"
+                  title={translations["delete"]}
                 >
                   <Trash2></Trash2>
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Delete this comment?</DialogTitle>
+                  <DialogTitle>{translations["delete_confirm"]}</DialogTitle>
                 </DialogHeader>
                 <DialogFooter>
                   <DialogClose asChild>
-                    <Button variant="secondary">Cancel</Button>
+                    <Button variant="secondary">
+                      {translations["cancel"]}
+                    </Button>
                   </DialogClose>
                   <Button
                     variant="destructive"
@@ -140,7 +141,7 @@ const CommentSection = ({
                       handleDelete(comment.id);
                     }}
                   >
-                    Delete
+                    {translations["delete"]}
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -148,6 +149,24 @@ const CommentSection = ({
           )}
         </div>
       ))}
+      {userId ? (
+        <div className="flex items-end gap-4">
+          <Textarea
+            placeholder={translations["comment_placeholder"]}
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+          ></Textarea>
+          <Button
+            variant="secondary"
+            onClick={handleCommentSubmit}
+            disabled={!commentText.trim() || isCommenting}
+          >
+            {translations["submit"]}
+          </Button>
+        </div>
+      ) : (
+        <div>{translations["sign_in_to_comment"]}</div>
+      )}
     </div>
   );
 };

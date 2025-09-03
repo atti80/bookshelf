@@ -1,8 +1,16 @@
 import React from "react";
 import GenreSelectWrapper from "./GenreSelect";
-import { getGenres } from "@/actions/genre.actions";
 import Link from "next/link";
 import SearchInputWrapper from "./SearchInput";
+import { fetchCategories } from "@/actions/wordpress.actions";
+import { getTranslations } from "@/actions/translation.actions";
+
+const genres = await fetchCategories();
+const translations = await getTranslations([
+  "home_title",
+  "search",
+  "all_genres",
+]);
 
 const Navbar = async ({
   showFilters,
@@ -13,8 +21,6 @@ const Navbar = async ({
   title?: string;
   linkUrl?: string;
 }) => {
-  const genres = await getGenres();
-
   return (
     <header className="w-full sticky top-0">
       <nav className="h-16 w-full px-2 xs:px-8 flex items-center justify-between z-999 bg-background">
@@ -26,14 +32,20 @@ const Navbar = async ({
           </div>
           <Link href={linkUrl ? linkUrl : "/"}>
             <span className="text-xl items-center hidden md:flex">
-              {title ?? "bookshelf"}
+              {title ??
+                (translations["home_title"].toUpperCase() || "bookshelf")}
             </span>
           </Link>
         </div>
         {showFilters && (
           <div className="flex max-xs:grow-1 max-xs:gap-1 gap-2 lg:gap-8">
-            <GenreSelectWrapper genres={genres}></GenreSelectWrapper>
-            <SearchInputWrapper></SearchInputWrapper>
+            <GenreSelectWrapper
+              genres={genres}
+              allGenresText={translations["all_genres"] || "All Genres"}
+            ></GenreSelectWrapper>
+            <SearchInputWrapper
+              searchPlaceholder={translations["search"] || "Search"}
+            ></SearchInputWrapper>
           </div>
         )}
       </nav>

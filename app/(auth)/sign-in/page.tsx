@@ -6,6 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "@/actions/translation.actions";
+
+const translations = await getTranslations([
+  "sign_in",
+  "password",
+  "register",
+  "back",
+]);
 
 export default async function SignIn({
   searchParams,
@@ -18,7 +26,7 @@ export default async function SignIn({
     <div className="container mx-auto p-4 max-w-[750px]">
       <Card>
         <CardHeader>
-          <CardTitle>Log In</CardTitle>
+          <CardTitle>{translations["sign_in"]}</CardTitle>
           {oauthError && (
             <CardDescription className="text-destructive">
               {oauthError}
@@ -26,7 +34,7 @@ export default async function SignIn({
           )}
         </CardHeader>
         <CardContent>
-          <SignInForm />
+          <SignInForm translations={translations} />
         </CardContent>
       </Card>
     </div>

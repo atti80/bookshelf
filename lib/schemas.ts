@@ -1,14 +1,33 @@
+import { getTranslations } from "@/actions/translation.actions";
 import { z } from "zod";
 
+const translations = await getTranslations([
+  "invalid_email",
+  "password_required",
+  "name_required",
+  "password_short",
+]);
+
 export const signInSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z
+    .string()
+    .email(translations["invalid_email"] || "Invalid email address"),
+  password: z
+    .string()
+    .min(1, translations["password_required"] || "Password is required"),
 });
 
 export const signUpSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(8),
+  name: z.string().min(1, translations["name_required"] || "Name is required"),
+  email: z
+    .string()
+    .email(translations["invalid_email"] || "Invalid email address"),
+  password: z
+    .string()
+    .min(
+      8,
+      translations["password_short"] || "Password must be at least 8 characters"
+    ),
 });
 
 export const articleSchema = z.object({

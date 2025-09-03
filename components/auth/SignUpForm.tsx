@@ -16,10 +16,16 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { signUpSchema } from "@/lib/schemas";
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export function SignUpForm() {
+export function SignUpForm({
+  translations,
+}: {
+  translations: Record<string, string>;
+}) {
   const [error, setError] = useState<string>();
   const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -55,7 +61,7 @@ export function SignUpForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{translations["name"]}</FormLabel>
               <FormControl>
                 <Input type="text" {...field} />
               </FormControl>
@@ -81,7 +87,7 @@ export function SignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{translations["password"]}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -91,14 +97,14 @@ export function SignUpForm() {
         />
         <div className="flex justify-between items-center">
           <Button asChild variant="link">
-            <Link href="/">Back</Link>
+            <Link href="/">{translations["back"]}</Link>
           </Button>
           <div className="flex gap-4 justify-end">
             <Button asChild variant="link">
-              <Link href="/sign-in">Log in</Link>
+              <Link href="/sign-in">{translations["sign_in"]}</Link>
             </Button>
             <Button type="submit" variant="secondary">
-              Register
+              {translations["register"]}
             </Button>
           </div>
         </div>

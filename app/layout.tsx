@@ -15,8 +15,8 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "Bookshelf",
-  description: "Exciting new book reviews",
+  title: "Könyvelvonó",
+  description: "Könyvajánló blog és közösség",
 };
 
 export default function RootLayout({

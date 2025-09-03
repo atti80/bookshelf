@@ -20,12 +20,21 @@ import {
 } from "@/lib/session";
 import { redis } from "@/lib/redis";
 import { updateLastLogin } from "./user.actions";
+import { getTranslations } from "./translation.actions";
 // import { getOAuthClient } from "../core/oauth/base";
+
+const translations = await getTranslations([
+  "unable_login",
+  "user_exists",
+  "unable_register",
+  "incorrect_password",
+  "user_not_found",
+]);
 
 export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
   const { success, data } = signInSchema.safeParse(unsafeData);
 
-  if (!success) return "Unable to log you in";
+  if (!success) return translations["unable_login"] || "Unable to log you in";
 
   const user = await db.query.User.findFirst({
     columns: {
@@ -40,7 +49,7 @@ export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
   });
 
   if (user == null || user.password == null || user.salt == null) {
-    return "User not found";
+    return translations["user_not_found"] || "User not found";
   }
 
   const isCorrectPassword = await comparePasswords({
@@ -49,7 +58,8 @@ export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
     salt: user.salt,
   });
 
-  if (!isCorrectPassword) return "Incorrect password";
+  if (!isCorrectPassword)
+    return translations["incorrect_password"] || "Incorrect password";
 
   await updateLastLogin(user.id);
   await createUserSession({
@@ -64,13 +74,17 @@ export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
 export async function signUp(unsafeData: z.infer<typeof signUpSchema>) {
   const { success, data } = signUpSchema.safeParse(unsafeData);
 
-  if (!success) return "Unable to create account: parse error";
+  if (!success)
+    return translations["unable_register"] || "Unable to create account";
 
   const existingUser = await db.query.User.findFirst({
     where: eq(User.email, data.email),
   });
 
-  if (existingUser != null) return "Account already exists for this email";
+  if (existingUser != null)
+    return (
+      translations["user_exists"] || "Account already exists for this email"
+    );
 
   try {
     const salt = generateSalt();
@@ -87,7 +101,8 @@ export async function signUp(unsafeData: z.infer<typeof signUpSchema>) {
       })
       .returning({ id: User.id, isAdmin: User.isAdmin });
 
-    if (user == null) return "Unable to create account";
+    if (user == null)
+      return translations["unable_register"] || "Unable to create account";
 
     await createUserSession({
       id: user.id,
@@ -96,7 +111,7 @@ export async function signUp(unsafeData: z.infer<typeof signUpSchema>) {
     });
   } catch (e) {
     console.log(e);
-    return `Unable to create account: ${e}`;
+    return `${translations["unable_register"]} ${e}`;
   }
 
   redirect("/");

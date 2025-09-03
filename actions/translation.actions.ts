@@ -1,18 +1,22 @@
-import { eq, and } from "drizzle-orm";
+"use server";
+
+import { eq, and, inArray } from "drizzle-orm";
 import { db } from "@/db/db";
 import { Translation } from "@/db/schema";
 
-export async function getTranslation(languageCode: string, key: string) {
-  const result = await db
-    .select({ text: Translation.translationText })
-    .from(Translation)
-    .where(
-      and(
-        eq(Translation.languageCode, languageCode),
-        eq(Translation.translationKey, key)
-      )
-    )
-    .limit(1);
+export async function getTranslations(
+  keys?: string[]
+): Promise<Record<string, string>> {
+  const result = await db.query.Translation.findMany({
+    where: and(
+      eq(Translation.languageCode, process.env.SITE_LANGUAGE || "en"),
+      keys ? inArray(Translation.translationKey, keys) : undefined
+    ),
+    columns: { translationKey: true, translationText: true },
+  });
 
-  return result[0]?.text ?? null;
+  return result.reduce((acc, curr) => {
+    acc[curr.translationKey] = curr.translationText;
+    return acc;
+  }, {} as Record<string, string>);
 }

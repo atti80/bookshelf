@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
-const SearchInput = () => {
+const SearchInput = ({ searchPlaceholder }: { searchPlaceholder: string }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -21,7 +21,7 @@ const SearchInput = () => {
   return (
     <div className="flex gap-1">
       <Input
-        placeholder="search..."
+        placeholder={`${searchPlaceholder}...`}
         value={searchText}
         onChange={(v) => {
           setSearchText(v.target.value);
@@ -42,10 +42,14 @@ const SearchInput = () => {
   );
 };
 
-const SearchInputWrapper = () => {
+const SearchInputWrapper = ({
+  searchPlaceholder,
+}: {
+  searchPlaceholder: string;
+}) => {
   return (
     <Suspense>
-      <SearchInput></SearchInput>
+      <SearchInput searchPlaceholder={searchPlaceholder}></SearchInput>
     </Suspense>
   );
 };
