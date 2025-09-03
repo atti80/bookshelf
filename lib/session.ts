@@ -2,8 +2,9 @@ import { z } from "zod";
 import { redis } from "@/lib/redis";
 import { cookies } from "next/headers";
 
-// Seven days in seconds
-export const SESSION_EXPIRATION_SECONDS = Number(process.env.SESSION_EXPIRATION_SECONDS);
+export const SESSION_EXPIRATION_SECONDS = Number(
+  process.env.SESSION_EXPIRATION_SECONDS
+);
 const COOKIE_SESSION_KEY = "session-id";
 
 const sessionSchema = z.object({

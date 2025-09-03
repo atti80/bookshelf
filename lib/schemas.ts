@@ -6,6 +6,9 @@ const translations = await getTranslations([
   "password_required",
   "name_required",
   "password_short",
+  "old_password_required",
+  "passwords_dont_match",
+  "new_password_same",
 ]);
 
 export const signInSchema = z.object({
@@ -29,6 +32,38 @@ export const signUpSchema = z.object({
       translations["password_short"] || "Password must be at least 8 characters"
     ),
 });
+
+export const changePswdSchema = z
+  .object({
+    oldPassword: z
+      .string()
+      .min(
+        1,
+        translations["old_password_required"] || "Old password is required"
+      ),
+    password: z
+      .string()
+      .min(
+        8,
+        translations["password_short"] ||
+          "Password must be at least 8 characters"
+      ),
+    confirmPassword: z
+      .string()
+      .min(
+        8,
+        translations["password_short"] ||
+          "Password must be at least 8 characters"
+      ),
+  })
+  .refine((data) => data.oldPassword !== data.password, {
+    message: translations["new_password_same"] || "New password is same as old",
+    path: ["password"],
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: translations["passwords_dont_match"] || "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export const articleSchema = z.object({
   genres: z

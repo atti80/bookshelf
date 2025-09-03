@@ -58,7 +58,14 @@ const UserCard = async ({
       )}
       <CardFooter className="flex-col gap-2">
         {user ? (
-          <LogOutButton text={translations["sign_out"]}></LogOutButton>
+          <>
+            <Button asChild variant="link">
+              <Link href="/change-password">
+                {translations["change_password"]}
+              </Link>
+            </Button>
+            <LogOutButton text={translations["sign_out"]}></LogOutButton>
+          </>
         ) : (
           <>
             <Button variant="secondary" asChild className="w-full">

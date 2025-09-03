@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import { signInSchema, signUpSchema } from "@/lib/schemas";
+import { signInSchema, signUpSchema, changePswdSchema } from "@/lib/schemas";
 import { db } from "@/db/db";
 import { User } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -13,6 +13,7 @@ import {
   hashPassword,
 } from "@/lib/passwordHasher";
 import {
+  getUserFromSession,
   removeUserFromSession,
   SESSION_EXPIRATION_SECONDS,
   setCookie,
@@ -21,6 +22,7 @@ import {
 import { redis } from "@/lib/redis";
 import { updateLastLogin } from "./user.actions";
 import { getTranslations } from "./translation.actions";
+import { cookies } from "next/headers";
 // import { getOAuthClient } from "../core/oauth/base";
 
 const translations = await getTranslations([
@@ -29,6 +31,9 @@ const translations = await getTranslations([
   "unable_register",
   "incorrect_password",
   "user_not_found",
+  "unable_update_pswd",
+  "old_password_incorrect",
+  "new_password_same",
 ]);
 
 export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
@@ -131,6 +136,48 @@ async function createUserSession(user: UserSession) {
 
   setCookie(sessionId);
 }
+
+export const updatePassword = async (
+  unsafeData: z.infer<typeof changePswdSchema>
+) => {
+  try {
+    const { success, data } = changePswdSchema.safeParse(unsafeData);
+
+    if (!success)
+      return translations["unable_update_pswd"] || "Unable to update password";
+
+    const user = await getUserFromSession(await cookies());
+    if (user == null) return translations["user_not_found"] || "User not found";
+
+    const userData = await db.query.User.findFirst({
+      where: eq(User.id, user.id),
+      columns: { salt: true, password: true },
+    });
+
+    if (userData == null || userData.password == null || userData.salt == null)
+      return translations["user_not_found"] || "User not found";
+
+    const isOldPasswordCorrect = await comparePasswords({
+      password: data.oldPassword,
+      hashedPassword: userData.password,
+      salt: userData.salt,
+    });
+    if (!isOldPasswordCorrect)
+      return translations["old_password_incorrect"] || "Old password incorrect";
+
+    const newHashedPassword = await hashPassword(data.password, userData.salt);
+    await db
+      .update(User)
+      .set({ password: newHashedPassword })
+      .where(eq(User.id, user.id));
+  } catch (error) {
+    console.error("Error updating password:", error);
+    return translations["unable_update_pswd"] || "Unable to update password";
+  }
+
+  await removeUserFromSession();
+  redirect("/sign-in");
+};
 
 // export async function oAuthSignIn(provider: OAuthProvider) {
 //   const oAuthClient = getOAuthClient(provider);

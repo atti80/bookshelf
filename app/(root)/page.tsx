@@ -25,6 +25,7 @@ const translations = await getTranslations([
   "categories",
   "all_genres",
   "no_articles",
+  "change_password",
 ]);
 
 export default async function Home({

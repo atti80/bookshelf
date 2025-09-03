@@ -97,7 +97,7 @@ export function SignUpForm({
         />
         <div className="flex justify-between items-center">
           <Button asChild variant="link">
-            <Link href="/">{translations["back"]}</Link>
+            <Link href="/">&lt;&lt; {translations["back"]}</Link>
           </Button>
           <div className="flex gap-4 justify-end">
             <Button asChild variant="link">
