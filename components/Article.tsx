@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { ReadMoreHandle } from "./ReadMore";
 import Link from "next/link";
 import { Post } from "@/actions/wordpress.actions";
+import { toast } from "sonner";
 
 const Article = ({
   post: post,
@@ -24,7 +25,12 @@ const Article = ({
   const [hasLiked, setHasLiked] = useState(post.isLiked);
 
   const handleLike = async () => {
-    if (!userId || isLiking) return;
+    if (isLiking) return;
+    if (!userId) {
+      toast.error(translations["sign_in_to_like"] || "Sign in to like");
+      return;
+    }
+
     try {
       setIsLiking(true);
       setHasLiked((prev) => !prev);

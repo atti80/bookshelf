@@ -1,6 +1,7 @@
 import { SignUpForm } from "@/components/auth/SignUpForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "@/actions/translation.actions";
+import { Separator } from "@/components/ui/separator";
 
 const translations = await getTranslations([
   "sign_in",
@@ -16,6 +17,7 @@ export default function SignUp() {
       <Card>
         <CardHeader>
           <CardTitle>{translations["register"]}</CardTitle>
+          <Separator className="mt-4"></Separator>
         </CardHeader>
         <CardContent>
           <SignUpForm translations={translations} />

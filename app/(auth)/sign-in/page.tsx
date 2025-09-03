@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getTranslations } from "@/actions/translation.actions";
+import { Separator } from "@/components/ui/separator";
 
 const translations = await getTranslations([
   "sign_in",
@@ -27,6 +28,7 @@ export default async function SignIn({
       <Card>
         <CardHeader>
           <CardTitle>{translations["sign_in"]}</CardTitle>
+          <Separator className="mt-4"></Separator>
           {oauthError && (
             <CardDescription className="text-destructive">
               {oauthError}

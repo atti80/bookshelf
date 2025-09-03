@@ -20,30 +20,20 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { getTranslations } from "@/actions/translation.actions";
+import Link from "next/link";
 
 type Comments = Awaited<ReturnType<typeof getComments>>;
-
-const translations = await getTranslations([
-  "sign_in_to_comment",
-  "no_comments",
-  "comments",
-  "comment",
-  "delete",
-  "delete_confirm",
-  "cancel",
-  "submit",
-  "comment_placeholder",
-]);
 
 const CommentSection = ({
   articleId,
   userId,
   userName,
+  translations,
 }: {
   articleId: number;
   userId: number | undefined;
   userName: string | undefined;
+  translations: Record<string, string>;
 }) => {
   const [comments, setComments] = useState<Comments>([]);
   const [commentText, setCommentText] = useState("");
@@ -165,7 +155,12 @@ const CommentSection = ({
           </Button>
         </div>
       ) : (
-        <div>{translations["sign_in_to_comment"]}</div>
+        <div>
+          {translations["sign_in_to_comment"]}{" "}
+          <Button asChild variant="link">
+            <Link href="/sign-in">{translations["sign_in"]} &gt;&gt;</Link>
+          </Button>
+        </div>
       )}
     </div>
   );

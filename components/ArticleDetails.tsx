@@ -9,20 +9,28 @@ import { format } from "date-fns";
 import { hu } from "date-fns/locale";
 import Link from "next/link";
 import { PostDetails } from "@/actions/wordpress.actions";
+import { toast } from "sonner";
 
 const ArticleDetails = ({
   post: post,
   userId,
+  signInMessage,
 }: {
   post: PostDetails;
   userId: number | undefined;
   fullContent?: boolean;
+  signInMessage?: string;
 }) => {
   const [isLiking, setIsLiking] = useState(false);
   const [hasLiked, setHasLiked] = useState(post.isLiked);
 
   const handleLike = async () => {
-    if (!userId || isLiking) return;
+    if (isLiking) return;
+    if (!userId) {
+      toast.error(signInMessage || "Sign in to like");
+      return;
+    }
+
     try {
       setIsLiking(true);
       setHasLiked((prev) => !prev);

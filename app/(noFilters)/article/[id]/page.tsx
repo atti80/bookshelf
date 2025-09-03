@@ -1,8 +1,23 @@
+import { getTranslations } from "@/actions/translation.actions";
 import { getCurrentUser } from "@/actions/user.actions";
 import { fetchPostDetails } from "@/actions/wordpress.actions";
 import ArticleDetails from "@/components/ArticleDetails";
 import CommentSection from "@/components/CommentSection";
 import { Toaster } from "@/components/ui/sonner";
+
+const translations = await getTranslations([
+  "sign_in_to_comment",
+  "sign_in_to_like",
+  "no_comments",
+  "comments",
+  "comment",
+  "delete",
+  "delete_confirm",
+  "cancel",
+  "submit",
+  "comment_placeholder",
+  "sign_in",
+]);
 
 const ArticlePage = async ({ params }: { params: Promise<{ id: number }> }) => {
   const { id } = await params;
@@ -20,11 +35,13 @@ const ArticlePage = async ({ params }: { params: Promise<{ id: number }> }) => {
             post={post}
             userId={user?.id}
             fullContent={true}
+            signInMessage={translations["sign_in_to_like"]}
           ></ArticleDetails>
           <CommentSection
             articleId={id}
             userId={user?.id}
             userName={user?.name ?? undefined}
+            translations={translations}
           ></CommentSection>
         </div>
       )}
