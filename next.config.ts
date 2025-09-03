@@ -1,17 +1,20 @@
 import type { NextConfig } from "next";
 
+const wordpressUrl = new URL(process.env.NEXT_PUBLIC_WORDPRESS_URL || "");
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
+        protocol: "http",
+        hostname: wordpressUrl.hostname,
+        pathname: "/**",
+      },
+      {
         protocol: "https",
-        hostname: "uqbnnjhiuschryrsnyse.storage.supabase.co",
+        hostname: wordpressUrl.hostname,
         pathname: "/**",
       },
     ],
-  },
-  publicRuntimeConfig: {
-    bucketUrl: process.env.NEXT_PUBLIC_AWS_BUCKET_URL,
   },
 };
 
