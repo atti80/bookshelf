@@ -31,9 +31,9 @@ const translations = await getTranslations([
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const params = await searchParams;
+  const params = searchParams;
 
   const categoryId = params["category"]
     ? parseInt(params["category"] as string)

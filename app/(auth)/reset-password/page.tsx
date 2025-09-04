@@ -8,6 +8,9 @@ const translations = await getTranslations([
   "email_not_registered",
   "reset_password",
   "reset_email_sent",
+  "unable_request_reset",
+  "password_reset_emailsubject",
+  "password_reset_emailbody",
 ]);
 
 export default async function ResetPassword() {

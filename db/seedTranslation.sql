@@ -113,5 +113,33 @@ VALUES
   ('reset_link_invalid', 'en', 'This password reset link is invalid or has expired. Please request a new link.'),
   ('reset_link_invalid', 'hu', 'Ez a jelszó visszaállító link érvénytelen vagy lejárt. Kérj egy újat.'),
   ('password_reset', 'en', 'Your password has been reset. You can now sign in with your new password.'),
-  ('password_reset', 'hu', 'A jelszavad vissza lett állítva. Most már bejelentkezhetsz az új jelszavaddal.')
+  ('password_reset', 'hu', 'A jelszavad vissza lett állítva. Most már bejelentkezhetsz az új jelszavaddal.'),
+  ('password_reset_emailsubject', 'en', 'Reset Your Password for Konyvelvono.hu'),
+  ('password_reset_emailsubject', 'hu', 'Könyvelvonó jelszó visszaállítás'),
+  ('password_reset_emailbody', 'en', 'Hello,
+
+We received a request to reset the password for your Konyvelvono account.
+To reset your password, please click the link below.
+
+<reset_password_link>
+
+This link is valid for 60 minutes.
+
+If you did not request a password reset, you can safely ignore this email. Your password will not be changed.
+
+Best,
+The Konyvelvono Team')
+  ('password_reset_emailbody', 'hu', 'Üdvözlöm!
+
+Kérést kaptunk a Könyvelvonó fiókjához tartozó jelszó visszaállítására.
+A jelszó visszaállításához kattintson az alábbi linkre.
+
+<reset_password_link>
+
+Ez a link 60 percig érvényes.
+
+Ha nem kért jelszó visszaállítást, nyugodtan figyelmen kívül hagyhatja ezt az e-mailt. A jelszava nem kerül megváltoztatásra.
+
+Üdvözlettel,
+Könyvelvonó')
 ON CONFLICT ("translationKey", "languageCode") DO NOTHING;

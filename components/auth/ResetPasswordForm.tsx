@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { resetPasswordSchema } from "@/lib/schemas";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +26,14 @@ const ResetPasswordForm = ({
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [error, setError] = useState<string>();
   const [message, setMessage] = useState<string>();
+  const [baseUrl, setBaseUrl] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setBaseUrl(window.location.origin);
+    }
+  }, []);
+
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -41,9 +49,27 @@ const ResetPasswordForm = ({
       return;
     }
 
+    const response = await fetch("/api/sendmail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        recipient: data.email,
+        subject: translations["password_reset_emailsubject"],
+        message: translations["password_reset_emailbody"].replace(
+          "<reset_password_link>",
+          `${baseUrl}/change_password?token=${result.token}`
+        ),
+      }),
+    });
+
+    if (!response.ok) {
+      setMessage("");
+      setError(translations["unable_request_reset"]);
+      return;
+    }
+
     setError("");
     setMessage(translations["reset_email_sent"]);
-    console.log("Password reset token created:", result.token);
 
     setButtonDisabled(true);
     setTimeout(() => {
