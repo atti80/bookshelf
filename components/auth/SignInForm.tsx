@@ -93,11 +93,10 @@ export function SignInForm({
             <Link href="/">&lt;&lt; {translations["back"]}</Link>
           </Button>
           <div className="flex gap-4 justify-end">
-            {/* <Button asChild variant="link">
-              <Link href="/sign-up">{translations["register"]}</Link>
-            </Button> */}
             <Button asChild variant="link">
-              <Link href="/">Elfelejtett jelszó</Link>
+              <Link href="/reset-password">
+                {translations["forgotten_password"]}
+              </Link>
             </Button>
             <Button variant="secondary" type="submit">
               {translations["sign_in"]}
@@ -105,11 +104,6 @@ export function SignInForm({
           </div>
         </div>
       </form>
-      {/* <div className="flex justify-end mt-4">
-        <Button asChild variant="link">
-          <Link href="/">Elfelejtett jelszo</Link>
-        </Button>
-      </div> */}
     </Form>
   );
 }
