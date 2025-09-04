@@ -99,5 +99,19 @@ VALUES
   ('old_password_incorrect', 'en', 'Current password is incorrect'),
   ('old_password_incorrect', 'hu', 'A régi jelszó hibás'),
   ('update', 'en', 'Update'),
-  ('update', 'hu', 'Módosít')
+  ('update', 'hu', 'Módosít'),
+  ('forgotten_password', 'en', 'Forgotten password'),
+  ('forgotten_password', 'hu', 'Elfelejtett jelszó'),
+  ('reset_password', 'en', 'Reset password'),
+  ('reset_password', 'hu', 'Jelszó visszaállítás'),
+  ('unable_request_reset', 'en', 'Unable to request password reset'),
+  ('unable_request_reset', 'hu', 'A jelszó visszaállítás kérése nem sikerült'),
+  ('email_not_registered', 'en', 'There is no account registered with that email address'),
+  ('email_not_registered', 'hu', 'Nincs regisztrált felhasználó ezzel az email címmel'),
+  ('reset_email_sent', 'en', 'We''ve sent a password reset link to this email address.'),
+  ('reset_email_sent', 'hu', 'Küldtünk egy jelszó visszaállító linket erre az e-mail címre.'),
+  ('reset_link_invalid', 'en', 'This password reset link is invalid or has expired. Please request a new link.'),
+  ('reset_link_invalid', 'hu', 'Ez a jelszó visszaállító link érvénytelen vagy lejárt. Kérj egy újat.'),
+  ('password_reset', 'en', 'Your password has been reset. You can now sign in with your new password.'),
+  ('password_reset', 'hu', 'A jelszavad vissza lett állítva. Most már bejelentkezhetsz az új jelszavaddal.')
 ON CONFLICT ("translationKey", "languageCode") DO NOTHING;

@@ -68,6 +68,17 @@ export const Translation = pgTable(
   ]
 );
 
+export const PasswordRequests = pgTable("passwordRequests", {
+  id: serial().primaryKey(),
+  userId: integer()
+    .notNull()
+    .references(() => User.id, { onDelete: "cascade" }),
+  token: text().notNull().unique(),
+  expiresAt: timestamp().notNull(),
+  usedAt: timestamp(),
+  createdAt: timestamp().notNull().defaultNow(),
+});
+
 export const likeRelations = relations(Like, ({ one }) => ({
   user: one(User, {
     fields: [Like.userId],

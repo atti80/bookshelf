@@ -2,9 +2,14 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import { signInSchema, signUpSchema, changePswdSchema } from "@/lib/schemas";
+import {
+  signInSchema,
+  signUpSchema,
+  changePswdSchema,
+  resetPasswordSchema,
+} from "@/lib/schemas";
 import { db } from "@/db/db";
-import { User } from "@/db/schema";
+import { PasswordRequests, User } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import {
   comparePasswords,
@@ -34,6 +39,8 @@ const translations = await getTranslations([
   "unable_update_pswd",
   "old_password_incorrect",
   "new_password_same",
+  "email_not_registered",
+  "unable_request_reset",
 ]);
 
 export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
@@ -179,7 +186,45 @@ export const updatePassword = async (
   redirect("/sign-in");
 };
 
-// export async function oAuthSignIn(provider: OAuthProvider) {
-//   const oAuthClient = getOAuthClient(provider);
-//   redirect(oAuthClient.createAuthUrl(await cookies()));
-// }
+export const insertPasswordRequest = async (
+  unsafeData: z.infer<typeof resetPasswordSchema>
+) => {
+  try {
+    const { success, data } = resetPasswordSchema.safeParse(unsafeData);
+    if (!success)
+      return {
+        success: false,
+        error:
+          translations["unable_request_reset"] || "Unable to request reset",
+      };
+
+    const user = await db.query.User.findFirst({
+      where: eq(User.email, data.email),
+      columns: { id: true, salt: true },
+    });
+    if (user == null)
+      return {
+        success: false,
+        error: translations["email_not_registered"] || "Email not registered",
+      };
+
+    const token = generateRandomString(128);
+    const hashedToken = await hashPassword(token, user.salt);
+    const expiration = new Date(Date.now() + 3600 * 1000);
+
+    await db
+      .delete(PasswordRequests)
+      .where(eq(PasswordRequests.userId, user.id));
+
+    await db.insert(PasswordRequests).values({
+      userId: user.id,
+      token: hashedToken,
+      expiresAt: expiration,
+    });
+
+    return { success: true, token };
+  } catch (error) {
+    console.error("Error inserting password request:", error);
+    throw { success: false, error };
+  }
+};

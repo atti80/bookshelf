@@ -65,6 +65,12 @@ export const changePswdSchema = z
     path: ["confirmPassword"],
   });
 
+export const resetPasswordSchema = z.object({
+  email: z
+    .string()
+    .email(translations["invalid_email"] || "Invalid email address"),
+});
+
 export const articleSchema = z.object({
   genres: z
     .array(
