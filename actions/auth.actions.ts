@@ -10,12 +10,14 @@ import {
 } from "@/lib/schemas";
 import { db } from "@/db/db";
 import { PasswordRequests, User } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq, gt, isNull } from "drizzle-orm";
 import {
   comparePasswords,
   generateRandomString,
   generateSalt,
+  generateToken,
   hashPassword,
+  hashToken,
 } from "@/lib/passwordHasher";
 import {
   getUserFromSession,
@@ -28,7 +30,6 @@ import { redis } from "@/lib/redis";
 import { updateLastLogin } from "./user.actions";
 import { getTranslations } from "./translation.actions";
 import { cookies } from "next/headers";
-// import { getOAuthClient } from "../core/oauth/base";
 
 const translations = await getTranslations([
   "unable_login",
@@ -41,6 +42,7 @@ const translations = await getTranslations([
   "new_password_same",
   "email_not_registered",
   "unable_request_reset",
+  "reset_link_invalid",
 ]);
 
 export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
@@ -153,30 +155,68 @@ export const updatePassword = async (
     if (!success)
       return translations["unable_update_pswd"] || "Unable to update password";
 
-    const user = await getUserFromSession(await cookies());
-    if (user == null) return translations["user_not_found"] || "User not found";
+    if (!data.token && !data.oldPassword)
+      return translations["unable_update_pswd"] || "Unable to update password";
 
+    let userId = null;
+
+    if (!data.token) {
+      const user = await getUserFromSession(await cookies());
+      userId = user?.id;
+    } else {
+      // find password request with token and get userID
+      console.log(`updatePassword token: ${data.token}`);
+      const hashedToken = hashToken(data.token);
+      const pswdRequest = await db.query.PasswordRequests.findFirst({
+        where: and(
+          eq(PasswordRequests.token, hashedToken),
+          isNull(PasswordRequests.usedAt),
+          gt(PasswordRequests.expiresAt, new Date())
+        ),
+      });
+
+      if (pswdRequest == null) return translations["reset_link_invalid"];
+
+      // Mark request as used
+      await db
+        .update(PasswordRequests)
+        .set({ usedAt: new Date() })
+        .where(eq(PasswordRequests.id, pswdRequest.id));
+
+      userId = pswdRequest.userId;
+    }
+
+    if (userId == null)
+      return translations["user_not_found"] || "User not found";
+
+    // Find user in database
     const userData = await db.query.User.findFirst({
-      where: eq(User.id, user.id),
+      where: eq(User.id, userId),
       columns: { salt: true, password: true },
     });
 
     if (userData == null || userData.password == null || userData.salt == null)
       return translations["user_not_found"] || "User not found";
 
-    const isOldPasswordCorrect = await comparePasswords({
-      password: data.oldPassword,
-      hashedPassword: userData.password,
-      salt: userData.salt,
-    });
-    if (!isOldPasswordCorrect)
-      return translations["old_password_incorrect"] || "Old password incorrect";
+    // Check if current password is correct
+    if (data.oldPassword) {
+      const isOldPasswordCorrect = await comparePasswords({
+        password: data.oldPassword,
+        hashedPassword: userData.password,
+        salt: userData.salt,
+      });
+      if (!isOldPasswordCorrect)
+        return (
+          translations["old_password_incorrect"] || "Old password incorrect"
+        );
+    }
 
+    // Update password
     const newHashedPassword = await hashPassword(data.password, userData.salt);
     await db
       .update(User)
       .set({ password: newHashedPassword })
-      .where(eq(User.id, user.id));
+      .where(eq(User.id, userId));
   } catch (error) {
     console.error("Error updating password:", error);
     return translations["unable_update_pswd"] || "Unable to update password";
@@ -208,8 +248,8 @@ export const insertPasswordRequest = async (
         error: translations["email_not_registered"] || "Email not registered",
       };
 
-    const token = generateRandomString(128);
-    const hashedToken = await hashPassword(token, user.salt);
+    const token = generateToken();
+    const hashedToken = await hashToken(token);
     const expiration = new Date(Date.now() + 3600 * 1000);
 
     await db

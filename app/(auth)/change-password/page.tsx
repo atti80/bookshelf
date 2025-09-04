@@ -8,6 +8,9 @@ import {
 } from "@/components/ui/card";
 import { getTranslations } from "@/actions/translation.actions";
 import { Separator } from "@/components/ui/separator";
+import { cookies } from "next/headers";
+import { getUserFromSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 const translations = await getTranslations([
   "back",
@@ -21,9 +24,16 @@ const translations = await getTranslations([
 export default async function ChangePassword({
   searchParams,
 }: {
-  searchParams: Promise<{ oauthError?: string }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { oauthError } = await searchParams;
+  const params = await searchParams;
+  const token = params["token"] as string | undefined;
+
+  if (!token) {
+    const cookieStore = await cookies();
+    const user = await getUserFromSession(cookieStore);
+    if (!user) redirect("/");
+  }
 
   return (
     <div className="container mx-auto p-4 max-w-[750px]">
@@ -31,14 +41,9 @@ export default async function ChangePassword({
         <CardHeader>
           <CardTitle>{translations["change_password"]}</CardTitle>
           <Separator className="mt-4"></Separator>
-          {oauthError && (
-            <CardDescription className="text-destructive">
-              {oauthError}
-            </CardDescription>
-          )}
         </CardHeader>
         <CardContent>
-          <ChangePasswordForm translations={translations} />
+          <ChangePasswordForm translations={translations} token={token} />
         </CardContent>
       </Card>
     </div>

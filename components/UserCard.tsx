@@ -46,12 +46,6 @@ const UserCard = async ({
               </span>
             </div>
           </Link>
-          {/* <div className="flex items-center justify-between">
-            <span>Comments</span>
-            <span className="md:max-xl:hidden inline">
-              {user.comments.length}
-            </span>
-          </div> */}
         </CardContent>
       ) : (
         <></>
@@ -59,7 +53,7 @@ const UserCard = async ({
       <CardFooter className="flex-col gap-2">
         {user ? (
           <>
-            <Button asChild variant="link">
+            <Button asChild variant="secondary" className="w-full">
               <Link href="/change-password">
                 {translations["change_password"]}
               </Link>

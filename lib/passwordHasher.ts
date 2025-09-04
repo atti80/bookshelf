@@ -10,6 +10,10 @@ export function hashPassword(password: string, salt: string): Promise<string> {
   });
 }
 
+export function hashToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
 export async function comparePasswords({
   password,
   salt,
@@ -29,6 +33,10 @@ export async function comparePasswords({
 
 export function generateRandomString(size: number) {
   return crypto.randomBytes(size).toString("hex").normalize();
+}
+
+export function generateToken() {
+  return crypto.randomBytes(32).toString("hex");
 }
 
 export function generateSalt() {

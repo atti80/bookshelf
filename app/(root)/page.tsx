@@ -33,7 +33,7 @@ export default async function Home({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const params = searchParams;
+  const params = await searchParams;
 
   const categoryId = params["category"]
     ? parseInt(params["category"] as string)

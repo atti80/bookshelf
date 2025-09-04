@@ -57,7 +57,7 @@ const ResetPasswordForm = ({
         subject: translations["password_reset_emailsubject"],
         message: translations["password_reset_emailbody"].replace(
           "<reset_password_link>",
-          `${baseUrl}/change_password?token=${result.token}`
+          `${baseUrl}/change-password?token=${result.token}`
         ),
       }),
     });

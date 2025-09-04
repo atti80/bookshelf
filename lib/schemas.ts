@@ -35,12 +35,7 @@ export const signUpSchema = z.object({
 
 export const changePswdSchema = z
   .object({
-    oldPassword: z
-      .string()
-      .min(
-        1,
-        translations["old_password_required"] || "Old password is required"
-      ),
+    oldPassword: z.string(),
     password: z
       .string()
       .min(
@@ -55,6 +50,12 @@ export const changePswdSchema = z
         translations["password_short"] ||
           "Password must be at least 8 characters"
       ),
+    token: z.string(),
+  })
+  .refine((data) => data.token || data.oldPassword.length > 1, {
+    message:
+      translations["old_password_required"] || "Old password is required",
+    path: ["password"],
   })
   .refine((data) => data.oldPassword !== data.password, {
     message: translations["new_password_same"] || "New password is same as old",
