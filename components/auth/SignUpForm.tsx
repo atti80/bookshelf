@@ -17,12 +17,14 @@ import { useState } from "react";
 import { signUpSchema } from "@/lib/schemas";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react";
 
 export function SignUpForm({
   translations,
 }: {
   translations: Record<string, string>;
 }) {
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>();
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -42,20 +44,6 @@ export function SignUpForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {error && <p className="text-destructive">{error}</p>}
-        {/* <div className="flex gap-4">
-          <Button
-            type="button"
-            onClick={async () => await oAuthSignIn("discord")}
-          >
-            Discord
-          </Button>
-          <Button
-            type="button"
-            onClick={async () => await oAuthSignIn("github")}
-          >
-            GitHub
-          </Button>
-        </div> */}
         <FormField
           control={form.control}
           name="name"
@@ -89,7 +77,26 @@ export function SignUpForm({
             <FormItem>
               <FormLabel>{translations["password"]}</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <div className="relative">
+                  <Input
+                    className="pr-10"
+                    type={showPassword ? "text" : "password"}
+                    {...field}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 h-auto"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
