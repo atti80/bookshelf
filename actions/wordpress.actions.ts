@@ -1,6 +1,5 @@
-import axios from "axios";
-
 const WORDPRESS_API_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wp/v2`;
+const REVALIDATE_SECONDS = 3600;
 
 export interface Post {
   id: number;
@@ -33,62 +32,73 @@ export interface PostDetails {
   }[];
 }
 
-export const fetchPosts = async (
+export async function fetchPosts(
   page: number = 1,
   perPage: number = 10,
   categoryId?: number,
   tagId?: number,
   searchText?: string,
   postIds?: number[]
-): Promise<{ posts: Post[]; count: number }> => {
+): Promise<{ posts: Post[]; count: number }> {
   try {
-    const params = {
-      page: page,
-      per_page: perPage,
-      ...(categoryId && { categories: categoryId }),
-      ...(tagId && { tags: tagId }),
-      ...(searchText && { search: searchText }),
-      ...(postIds && { include: postIds.join(",") }),
-    };
-    const response = await axios.get(`${WORDPRESS_API_URL}/posts`, {
-      params,
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per_page: perPage.toString(),
+      ...(categoryId ? { categories: categoryId.toString() } : {}),
+      ...(tagId ? { tags: tagId.toString() } : {}),
+      ...(searchText ? { search: searchText } : {}),
+      ...(postIds ? { include: postIds.join(",") } : {}),
     });
 
-    const featuredMediaIds = response.data.map((post: any) => ({
-      id: post.id,
-      mediaId: post.featured_media,
-    }));
-
-    const media = await axios.get(`${WORDPRESS_API_URL}/media`, {
-      params: {
-        include: featuredMediaIds.map((p: any) => p.mediaId).join(","),
-        per_page: 100,
-      },
+    const res = await fetch(`${WORDPRESS_API_URL}/posts?${params}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
     });
 
-    const posts: Post[] = response.data.map((post: any) => ({
+    if (!res.ok) throw new Error("Failed to fetch posts");
+    const data = await res.json();
+
+    const featuredMediaIds = data
+      .map((post: any) => post.featured_media)
+      .filter(Boolean);
+
+    const mediaParams = new URLSearchParams({
+      include: featuredMediaIds.join(","),
+      per_page: featuredMediaIds.length.toString(),
+    });
+    const mediaRes = await fetch(`${WORDPRESS_API_URL}/media?${mediaParams}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+
+    if (!mediaRes.ok) throw new Error("Failed to fetch media");
+    const media = await mediaRes.json();
+
+    // Map posts
+    const posts: Post[] = data.map((post: any) => ({
       id: post.id,
       title: post.title.rendered,
       excerpt: post.excerpt.rendered,
       image:
-        media.data.find((m: any) => m.id === post.featured_media)?.source_url ||
+        media.find((m: any) => m.id === post.featured_media)?.source_url ||
         null,
       isLiked: false,
     }));
 
-    return { posts, count: parseInt(response.headers["x-wp-total"]) };
+    return { posts, count: parseInt(res.headers.get("x-wp-total") ?? "0") };
   } catch (error) {
     console.error("Error fetching WordPress posts:", error);
     throw error;
   }
-};
+}
 
 export const fetchPostDetails = async (
   postId: number
 ): Promise<PostDetails> => {
   try {
-    const response = await axios.get(`${WORDPRESS_API_URL}/posts/${postId}`);
-    const post = response.data;
+    const res = await fetch(`${WORDPRESS_API_URL}/posts/${postId}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+    if (!res.ok) throw new Error("Failed to fetch post details");
+    const post = await res.json();
 
     const user = await fetchUserById(post.author);
     const categories = await fetchCategoryByIds(post.categories);
@@ -119,27 +129,33 @@ export const fetchPostDetails = async (
 
 export const fetchCategories = async () => {
   try {
-    const response = await axios.get(`${WORDPRESS_API_URL}/categories`, {
-      params: {
-        per_page: 100,
-      },
+    const res = await fetch(`${WORDPRESS_API_URL}/categories?per_page=100`, {
+      next: { revalidate: REVALIDATE_SECONDS },
     });
-    return response.data;
+
+    if (!res.ok) throw new Error("Failed to fetch WordPress categories");
+
+    return res.json();
   } catch (error) {
     console.error("Error fetching WordPress categories:", error);
     throw error;
   }
 };
 
-export const fetchCategoryByIds = async (categoryIds: number[]) => {
+const fetchCategoryByIds = async (categoryIds: number[]) => {
   try {
-    const response = await axios.get(`${WORDPRESS_API_URL}/categories`, {
-      params: {
-        include: categoryIds.join(","),
-        per_page: 100,
-      },
+    const params = new URLSearchParams({
+      include: categoryIds.join(","),
+      per_page: "100",
     });
-    return response.data;
+
+    const res = await fetch(`${WORDPRESS_API_URL}/categories?${params}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch categories by IDs");
+
+    return res.json();
   } catch (error) {
     console.error("Error fetching category:", error);
     throw error;
@@ -148,43 +164,48 @@ export const fetchCategoryByIds = async (categoryIds: number[]) => {
 
 export const fetchTags = async () => {
   try {
-    const response = await axios.get(`${WORDPRESS_API_URL}/tags`);
-    return response.data;
+    const res = await fetch(`${WORDPRESS_API_URL}/tags?per_page=100`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch WordPress tags");
+
+    return res.json();
   } catch (error) {
     console.error("Error fetching WordPress tags:", error);
     throw error;
   }
 };
 
-const fetchTagsByIds = async (tagIds: number[]) => {
+export const fetchTagsByIds = async (tagIds: number[]) => {
   try {
-    const response = await axios.get(`${WORDPRESS_API_URL}/tags`, {
-      params: {
-        include: tagIds.join(","),
-        per_page: 100,
-      },
+    const params = new URLSearchParams({
+      include: tagIds.join(","),
+      per_page: "100",
     });
-    return response.data;
+
+    const res = await fetch(`${WORDPRESS_API_URL}/tags?${params}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch tags by IDs");
+
+    return res.json();
   } catch (error) {
     console.error("Error fetching tags:", error);
     throw error;
   }
 };
 
-const fetchUsers = async () => {
-  try {
-    const response = await axios.get(`${WORDPRESS_API_URL}/users`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    throw error;
-  }
-};
-
 const fetchUserById = async (id: number) => {
   try {
-    const response = await axios.get(`${WORDPRESS_API_URL}/users/${id}`);
-    return response.data;
+    const res = await fetch(`${WORDPRESS_API_URL}/users/${id}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch categories by IDs");
+
+    return res.json();
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
