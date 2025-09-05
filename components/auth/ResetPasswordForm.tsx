@@ -10,11 +10,10 @@ import {
 } from "@/components/ui/form";
 import { insertPasswordRequest } from "@/actions/auth.actions";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { resetPasswordSchema } from "@/lib/schemas";
+import { ResetPasswordSchema, createResetPasswordSchema } from "@/lib/schemas";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -34,14 +33,14 @@ const ResetPasswordForm = ({
     }
   }, []);
 
-  const form = useForm<z.infer<typeof resetPasswordSchema>>({
-    resolver: zodResolver(resetPasswordSchema),
+  const form = useForm<ResetPasswordSchema>({
+    resolver: zodResolver(createResetPasswordSchema(translations)),
     defaultValues: {
       email: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
+  async function onSubmit(data: ResetPasswordSchema) {
     const result = await insertPasswordRequest(data);
     if (!result.success) {
       setMessage("");

@@ -3,10 +3,10 @@ import GenreSelectWrapper from "./GenreSelect";
 import Link from "next/link";
 import SearchInputWrapper from "./SearchInput";
 import { fetchCategories } from "@/actions/wordpress.actions";
-import { getTranslations } from "@/actions/translation.actions";
+import { getCachedTranslations } from "@/actions/translation.helper";
 
 const genres = await fetchCategories();
-const translations = await getTranslations([
+const translations = await getCachedTranslations([
   "home_title",
   "search",
   "all_genres",

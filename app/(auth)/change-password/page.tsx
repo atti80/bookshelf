@@ -1,30 +1,28 @@
 import { ChangePasswordForm } from "@/components/auth/ChangePasswordForm";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { getTranslations } from "@/actions/translation.actions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cookies } from "next/headers";
 import { getUserFromSession } from "@/lib/session";
 import { redirect } from "next/navigation";
+import { getCachedTranslations } from "@/actions/translation.helper";
 
-const translations = await getTranslations([
+const translations = await getCachedTranslations([
   "back",
   "old_password",
   "new_password",
   "confirm_password",
   "change_password",
   "update",
+  "password_short",
+  "old_password_required",
+  "new_password_same",
+  "passwords_dont_match",
 ]);
 
 export default async function ChangePassword({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
   const token = params["token"] as string | undefined;

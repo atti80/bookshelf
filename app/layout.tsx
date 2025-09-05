@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel, Lora } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const cinzel = Cinzel({
   variable: "--font-cinzel",
@@ -30,6 +31,7 @@ export default function RootLayout({
         className={`${cinzel.variable} ${lora.variable} antialiased min-h-screen`}
       >
         {children}
+        <Toaster></Toaster>
       </body>
     </html>
   );

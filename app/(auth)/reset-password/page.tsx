@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getTranslations } from "@/actions/translation.actions";
 import { Separator } from "@/components/ui/separator";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
+import { getCachedTranslations } from "@/actions/translation.helper";
 
-const translations = await getTranslations([
+const translations = await getCachedTranslations([
   "back",
   "email_not_registered",
   "reset_password",
@@ -11,6 +11,7 @@ const translations = await getTranslations([
   "unable_request_reset",
   "password_reset_emailsubject",
   "password_reset_emailbody",
+  "invalid_email",
 ]);
 
 export default async function ResetPassword() {

@@ -10,11 +10,10 @@ import {
 } from "@/components/ui/form";
 import { signIn } from "@/actions/auth.actions";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { signInSchema } from "@/lib/schemas";
+import { SignInSchema, createSignInSchema } from "@/lib/schemas";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
@@ -26,15 +25,15 @@ export function SignInForm({
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>();
-  const form = useForm<z.infer<typeof signInSchema>>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<SignInSchema>({
+    resolver: zodResolver(createSignInSchema(translations)),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof signInSchema>) {
+  async function onSubmit(data: SignInSchema) {
     const error = await signIn(data);
     setError(error);
   }

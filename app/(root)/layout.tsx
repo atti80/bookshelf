@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Toaster } from "@/components/ui/sonner";
 
 export default function HomeLayout({
   children,
@@ -14,7 +13,6 @@ export default function HomeLayout({
         {children}
       </main>
       <Footer></Footer>
-      <Toaster></Toaster>
     </div>
   );
 }

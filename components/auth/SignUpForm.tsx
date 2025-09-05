@@ -10,11 +10,10 @@ import {
 } from "@/components/ui/form";
 import { signUp } from "@/actions/auth.actions";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { signUpSchema } from "@/lib/schemas";
+import { SignUpSchema, createSignUpSchema } from "@/lib/schemas";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
@@ -26,8 +25,8 @@ export function SignUpForm({
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>();
-  const form = useForm<z.infer<typeof signUpSchema>>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<SignUpSchema>({
+    resolver: zodResolver(createSignUpSchema(translations)),
     defaultValues: {
       name: "",
       email: "",
@@ -35,7 +34,7 @@ export function SignUpForm({
     },
   });
 
-  async function onSubmit(data: z.infer<typeof signUpSchema>) {
+  async function onSubmit(data: SignUpSchema) {
     const error = await signUp(data);
     setError(error);
   }

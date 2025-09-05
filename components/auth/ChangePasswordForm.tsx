@@ -10,14 +10,15 @@ import {
 } from "@/components/ui/form";
 import { updatePassword } from "@/actions/auth.actions";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { changePswdSchema } from "@/lib/schemas";
+import { useState, useEffect } from "react";
+import { ChangePswdSchema, createChangePswdSchema } from "@/lib/schemas";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
+import { redirect, useRouter } from "next/navigation";
 
 export function ChangePasswordForm({
   translations,
@@ -26,23 +27,42 @@ export function ChangePasswordForm({
   translations: Record<string, string>;
   token: string | undefined;
 }) {
+  const router = useRouter();
+  const [success, setSuccess] = useState<boolean>(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState<string>();
-  const form = useForm<z.infer<typeof changePswdSchema>>({
-    resolver: zodResolver(changePswdSchema),
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        router.push("/sign-in");
+      }, 5000);
+
+      return () => clearTimeout(timer); // cleanup if component unmounts
+    }
+  }, [success, router]);
+
+  const form = useForm<ChangePswdSchema>({
+    resolver: zodResolver(createChangePswdSchema(translations)),
     defaultValues: {
       oldPassword: "",
       password: "",
       confirmPassword: "",
-      token: token,
+      token: token || "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof changePswdSchema>) {
-    const error = await updatePassword(data);
-    setError(error);
+  async function onSubmit(data: ChangePswdSchema) {
+    const result = await updatePassword(data);
+    if (result.success) {
+      setError("");
+      setSuccess(true);
+      toast.message(result.message);
+    } else {
+      setError(result.error);
+    }
   }
 
   return (

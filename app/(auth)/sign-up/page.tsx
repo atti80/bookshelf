@@ -1,14 +1,17 @@
 import { SignUpForm } from "@/components/auth/SignUpForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getTranslations } from "@/actions/translation.actions";
 import { Separator } from "@/components/ui/separator";
+import { getCachedTranslations } from "@/actions/translation.helper";
 
-const translations = await getTranslations([
+const translations = await getCachedTranslations([
   "sign_in",
   "password",
   "register",
   "back",
   "name",
+  "name_required",
+  "invalid_email",
+  "password_short",
 ]);
 
 export default function SignUp() {

@@ -1,11 +1,10 @@
-import { getTranslations } from "@/actions/translation.actions";
+import { getCachedTranslations } from "@/actions/translation.helper";
 import { getCurrentUser } from "@/actions/user.actions";
 import { fetchPostDetails } from "@/actions/wordpress.actions";
 import ArticleDetails from "@/components/ArticleDetails";
 import CommentSection from "@/components/CommentSection";
-import { Toaster } from "@/components/ui/sonner";
 
-const translations = await getTranslations([
+const translations = await getCachedTranslations([
   "sign_in_to_comment",
   "sign_in_to_like",
   "no_comments",
@@ -45,7 +44,6 @@ const ArticlePage = async ({ params }: { params: Promise<{ id: number }> }) => {
           ></CommentSection>
         </div>
       )}
-      <Toaster></Toaster>
     </div>
   );
 };

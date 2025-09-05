@@ -1,14 +1,16 @@
 import { SignInForm } from "@/components/auth/SignInForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getTranslations } from "@/actions/translation.actions";
 import { Separator } from "@/components/ui/separator";
+import { getCachedTranslations } from "@/actions/translation.helper";
 
-const translations = await getTranslations([
+const translations = await getCachedTranslations([
   "sign_in",
   "password",
   "register",
   "back",
   "forgotten_password",
+  "invalid_email",
+  "password_required",
 ]);
 
 export default async function SignIn() {

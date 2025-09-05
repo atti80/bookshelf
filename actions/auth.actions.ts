@@ -28,10 +28,10 @@ import {
 } from "@/lib/session";
 import { redis } from "@/lib/redis";
 import { updateLastLogin } from "./user.actions";
-import { getTranslations } from "./translation.actions";
 import { cookies } from "next/headers";
+import { getCachedTranslations } from "./translation.helper";
 
-const translations = await getTranslations([
+const translations = await getCachedTranslations([
   "unable_login",
   "user_exists",
   "unable_register",
@@ -43,6 +43,7 @@ const translations = await getTranslations([
   "email_not_registered",
   "unable_request_reset",
   "reset_link_invalid",
+  "password_reset",
 ]);
 
 export async function signIn(unsafeData: z.infer<typeof signInSchema>) {
@@ -153,10 +154,18 @@ export const updatePassword = async (
     const { success, data } = changePswdSchema.safeParse(unsafeData);
 
     if (!success)
-      return translations["unable_update_pswd"] || "Unable to update password";
+      return {
+        success: false,
+        error:
+          translations["unable_update_pswd"] || "Unable to update password",
+      };
 
     if (!data.token && !data.oldPassword)
-      return translations["unable_update_pswd"] || "Unable to update password";
+      return {
+        success: false,
+        error:
+          translations["unable_update_pswd"] || "Unable to update password",
+      };
 
     let userId = null;
 
@@ -165,7 +174,6 @@ export const updatePassword = async (
       userId = user?.id;
     } else {
       // find password request with token and get userID
-      console.log(`updatePassword token: ${data.token}`);
       const hashedToken = hashToken(data.token);
       const pswdRequest = await db.query.PasswordRequests.findFirst({
         where: and(
@@ -175,7 +183,11 @@ export const updatePassword = async (
         ),
       });
 
-      if (pswdRequest == null) return translations["reset_link_invalid"];
+      if (pswdRequest == null)
+        return {
+          success: false,
+          error: translations["reset_link_invalid"],
+        };
 
       // Mark request as used
       await db
@@ -187,7 +199,10 @@ export const updatePassword = async (
     }
 
     if (userId == null)
-      return translations["user_not_found"] || "User not found";
+      return {
+        success: false,
+        error: translations["user_not_found"] || "User not found",
+      };
 
     // Find user in database
     const userData = await db.query.User.findFirst({
@@ -196,7 +211,10 @@ export const updatePassword = async (
     });
 
     if (userData == null || userData.password == null || userData.salt == null)
-      return translations["user_not_found"] || "User not found";
+      return {
+        success: false,
+        error: translations["user_not_found"] || "User not found",
+      };
 
     // Check if current password is correct
     if (data.oldPassword) {
@@ -206,9 +224,11 @@ export const updatePassword = async (
         salt: userData.salt,
       });
       if (!isOldPasswordCorrect)
-        return (
-          translations["old_password_incorrect"] || "Old password incorrect"
-        );
+        return {
+          success: false,
+          error:
+            translations["old_password_incorrect"] || "Old password incorrect",
+        };
     }
 
     // Update password
@@ -217,13 +237,21 @@ export const updatePassword = async (
       .update(User)
       .set({ password: newHashedPassword })
       .where(eq(User.id, userId));
+
+    await removeUserFromSession();
+    return {
+      success: true,
+      message:
+        translations["password_reset"] ||
+        "Your password has been reset. You will be redirected to the login page.",
+    };
   } catch (error) {
     console.error("Error updating password:", error);
-    return translations["unable_update_pswd"] || "Unable to update password";
+    return {
+      success: false,
+      error: translations["unable_update_pswd"] || "Unable to update password",
+    };
   }
-
-  await removeUserFromSession();
-  redirect("/sign-in");
 };
 
 export const insertPasswordRequest = async (

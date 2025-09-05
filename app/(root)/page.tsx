@@ -5,13 +5,13 @@ import ArticleList from "@/components/ArticleList";
 import { getCurrentUser } from "@/actions/user.actions";
 import CategorySelect from "@/components/CategorySelect";
 import { fetchCategories } from "@/actions/wordpress.actions";
-import { getTranslations } from "@/actions/translation.actions";
+import { getCachedTranslations } from "@/actions/translation.helper";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
 }
 
-const translations = await getTranslations([
+const translations = await getCachedTranslations([
   "read_more",
   "sign_in_to_like",
   "like",
@@ -31,7 +31,7 @@ const translations = await getTranslations([
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
 
