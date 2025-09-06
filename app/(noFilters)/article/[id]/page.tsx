@@ -1,3 +1,4 @@
+import { incrementPageViews } from "@/actions/pageviews.action";
 import { getCachedTranslations } from "@/actions/translation.helper";
 import { getCurrentUser } from "@/actions/user.actions";
 import { fetchPostDetails } from "@/actions/wordpress.actions";
@@ -25,6 +26,8 @@ const ArticlePage = async ({ params }: { params: Promise<{ id: number }> }) => {
   post.isLiked = user
     ? user.likes.some((like) => like.articleId === post.id)
     : false;
+
+  await incrementPageViews(id);
 
   return (
     <div className="max-w-4xl mx-auto">

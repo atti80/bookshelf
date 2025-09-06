@@ -6,6 +6,8 @@ import { getCurrentUser } from "@/actions/user.actions";
 import CategorySelect from "@/components/CategorySelect";
 import { fetchCategories } from "@/actions/wordpress.actions";
 import { getCachedTranslations } from "@/actions/translation.helper";
+import PageViewCounter from "@/components/PageViewCounter";
+import { incrementPageViews } from "@/actions/pageviews.action";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
@@ -26,6 +28,7 @@ const translations = await getCachedTranslations([
   "all_genres",
   "no_articles",
   "change_password",
+  "total_page_views",
 ]);
 
 export default async function Home({
@@ -45,6 +48,8 @@ export default async function Home({
   const user = await getCurrentUser({ withFullUser: true });
   const categories = await fetchCategories();
 
+  const pageViews = await incrementPageViews(0);
+
   return (
     <div className="flex flex-col max-md:gap-2 md:grid md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-5 justify-items-center items-start">
       <div className="flex flex-col gap-4 w-full items-center">
@@ -54,6 +59,10 @@ export default async function Home({
           categoryText={translations["categories"]}
           allGenresText={translations["all_genres"]}
         ></CategorySelect>
+        <PageViewCounter
+          text={translations["total_page_views"]}
+          count={pageViews}
+        ></PageViewCounter>
       </div>
       <ArticleList
         userId={user?.id}

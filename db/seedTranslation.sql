@@ -141,5 +141,7 @@ Ez a link 60 percig érvényes.
 Ha nem kért jelszó visszaállítást, nyugodtan figyelmen kívül hagyhatja ezt az e-mailt. A jelszava nem kerül megváltoztatásra.
 
 Üdvözlettel,
-Könyvelvonó')
+Könyvelvonó'),
+("total_page_views", "en", "Total page views"),
+("total_page_views", "hu", "Összes oldalmegjelenítés")
 ON CONFLICT ("translationKey", "languageCode") DO NOTHING;
