@@ -79,6 +79,11 @@ export const PasswordRequests = pgTable("passwordRequests", {
   createdAt: timestamp().notNull().defaultNow(),
 });
 
+export const PageViews = pgTable("pageViews", {
+  pageId: integer().primaryKey(),
+  views: integer().notNull().default(1),
+});
+
 export const likeRelations = relations(Like, ({ one }) => ({
   user: one(User, {
     fields: [Like.userId],
