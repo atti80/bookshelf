@@ -55,7 +55,7 @@ const Article = ({
   };
 
   return (
-    <div className="bg-background p-4 md:p-8 flex flex-col items-center rounded-md col-span-4 lg:col-span-3 xl:col-span-2">
+    <div className="bg-background p-4 md:p-8 sm:max-md:mx-2 flex flex-col items-center rounded-md">
       <div className="flex w-full gap-4 justify-between">
         <Link href={`/article/${post.id}`}>
           <h2
@@ -104,7 +104,7 @@ const Article = ({
                 height={200}
                 alt={post.image ? post.image : "No image"}
                 style={{ objectFit: "contain" }}
-                className="hidden lg:block"
+                className="hidden sm:block"
               ></Image>
             )}
             <div className="flex flex-col justify-between h-full cursor-pointer">

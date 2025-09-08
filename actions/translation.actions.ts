@@ -9,7 +9,10 @@ export async function getTranslations(
 ): Promise<Record<string, string>> {
   const result = await db.query.Translation.findMany({
     where: and(
-      eq(Translation.languageCode, process.env.SITE_LANGUAGE || "en"),
+      eq(
+        Translation.languageCode,
+        process.env.NEXT_PUBLIC_SITE_LANGUAGE || "en"
+      ),
       keys ? inArray(Translation.translationKey, keys) : undefined
     ),
     columns: { translationKey: true, translationText: true },

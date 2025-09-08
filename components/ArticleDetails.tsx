@@ -43,7 +43,7 @@ const ArticleDetails = ({
   };
 
   return (
-    <div className="bg-background p-4 md:p-8 flex flex-col items-center gap-8 rounded-md col-span-4 lg:col-span-3 xl:col-span-2">
+    <div className="bg-background p-4 md:p-8 my-4 flex flex-col items-center gap-8 rounded-md col-span-4 lg:col-span-3 xl:col-span-2">
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between mb-4">
           <Genres genres={post.categories}></Genres>

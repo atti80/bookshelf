@@ -29,7 +29,7 @@ VALUES
   ('favorites', 'en', 'Favorites'),
   ('favorites', 'hu', 'Kedvencek'),
   ('last_login', 'en', 'Last login'),
-  ('last_login', 'hu', 'Utolsó bejelntkezés'),
+  ('last_login', 'hu', 'Utolsó bejelentkezés'),
   ('read_more', 'en', 'Read more'),
   ('read_more', 'hu', 'Tovább olvasom'),
   ('like', 'en', 'Like'),

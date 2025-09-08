@@ -10,7 +10,7 @@ const CategorySelect = ({
   allGenresText: string;
 }) => {
   return (
-    <div className="bg-background flex flex-col gap-2 p-4 rounded-md w-[90%] xl:w-[80%]">
+    <div className="bg-background flex flex-col gap-2 p-4 rounded-md w-[90%] xl:w-[80%] max-lg:hidden">
       <h2 className="font-bold text-lg text-center">{categoryText}</h2>
       <hr className="bg-primary-dark"></hr>
       <Link href={`/`} key={0}>

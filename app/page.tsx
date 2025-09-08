@@ -10,6 +10,8 @@ import { getCurrentUser } from "@/actions/user.actions";
 import Footer from "@/components/Footer";
 import NavbarWrapper from "@/components/NavbarWrapper";
 import { redirect } from "next/navigation";
+import { updateUserSessionExpiration } from "@/lib/session";
+import { cookies } from "next/headers";
 
 const ARTICLES_PER_PAGE: number = parseInt(
   process.env.ARTICLES_PER_PAGE ?? "10"
@@ -55,6 +57,11 @@ export default async function Home({
 
   if (favourites && !user) {
     redirect("/sign-in");
+  }
+
+  if (user) {
+    const cookieStore = await cookies();
+    updateUserSessionExpiration(cookieStore);
   }
 
   const postsResponse = await fetchPosts(

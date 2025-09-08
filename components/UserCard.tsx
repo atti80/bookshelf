@@ -54,7 +54,6 @@ const UserCard = ({
 
   let timeDistance = "-";
   if (user?.lastLogin) {
-    console.log(SITE_LANGUAGE);
     if (SITE_LANGUAGE === "hu") {
       timeDistance = addHungarianAgo(
         formatDistanceToNowStrict(user.lastLogin, {
@@ -67,7 +66,7 @@ const UserCard = ({
 
   return (
     <Card className="max-w-900 w-[90%] xl:w-[80%] border-none">
-      <CardHeader>
+      <CardHeader className="md:max-lg:px-4">
         <CardTitle>{user ? `${user.name}` : translations["guest"]}</CardTitle>
         <CardDescription>
           {user && (
@@ -77,7 +76,7 @@ const UserCard = ({
         <Separator></Separator>
       </CardHeader>
       {user && (
-        <CardContent>
+        <CardContent className="md:max-lg:px-4">
           <Link href={"/?favourites=true"} onClick={handleClick}>
             <div className="flex items-center justify-between">
               <span>{translations["favorites"]}</span>
@@ -88,7 +87,7 @@ const UserCard = ({
           </Link>
         </CardContent>
       )}
-      <CardFooter className="flex-col gap-2">
+      <CardFooter className="flex-col gap-2 md:max-lg:px-4">
         {user ? (
           <>
             <Button asChild variant="secondary" className="w-full">
