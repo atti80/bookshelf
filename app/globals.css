@@ -50,7 +50,7 @@
     @apply text-6xl font-medium;
   }
   h2 {
-    @apply text-4xl font-medium font-cinzel text-primary-dark;
+    @apply text-4xl max-md:text-2xl font-medium font-cinzel text-primary-dark;
   }
   h3 {
     @apply text-2xl font-medium;
@@ -141,6 +141,6 @@ body {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[url(/images/bookshelf.jpg)] bg-gray-400 bg-blend-multiply text-foreground;
   }
 }

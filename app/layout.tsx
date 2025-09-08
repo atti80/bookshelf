@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Cinzel, Lora } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP);
+}
 
 const cinzel = Cinzel({
   variable: "--font-cinzel",

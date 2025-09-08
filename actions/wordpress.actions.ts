@@ -41,6 +41,8 @@ export async function fetchPosts(
   postIds?: number[]
 ): Promise<{ posts: Post[]; count: number }> {
   try {
+    if (postIds && !postIds.length) return { posts: [], count: 0 };
+
     const params = new URLSearchParams({
       page: page.toString(),
       per_page: perPage.toString(),
@@ -57,9 +59,11 @@ export async function fetchPosts(
     if (!res.ok) throw new Error("Failed to fetch posts");
     const data = await res.json();
 
+    if (!data.length) return { posts: [], count: 0 };
+
     const featuredMediaIds = data
       .map((post: any) => post.featured_media)
-      .filter(Boolean);
+      .filter(Boolean); // removes all falsy values
 
     const mediaParams = new URLSearchParams({
       include: featuredMediaIds.join(","),
