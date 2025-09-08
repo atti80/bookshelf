@@ -87,7 +87,9 @@ const ArticleDetails = ({
       <div>
         {post.tags.map((tag) => (
           <Link href={`/?tag=${tag.id}`} key={tag.id} className="mr-2">
-            <span key={tag.id}>{tag.name} </span>
+            <span key={tag.id} className="text-primary-light">
+              {tag.name} |
+            </span>
           </Link>
         ))}
       </div>

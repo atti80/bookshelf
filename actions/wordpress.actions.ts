@@ -98,30 +98,49 @@ export const fetchPostDetails = async (
   postId: number
 ): Promise<PostDetails> => {
   try {
-    const res = await fetch(`${WORDPRESS_API_URL}/posts/${postId}`, {
+    const res = await fetch(`${WORDPRESS_API_URL}/posts/${postId}?_embed`, {
       next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!res.ok) throw new Error("Failed to fetch post details");
     const post = await res.json();
 
-    const user = await fetchUserById(post.author);
-    const categories = await fetchCategoryByIds(post.categories);
-    const tags = await fetchTagsByIds(post.tags);
+    let categories: { id: number; name: string }[] = [];
+    let tags: { id: number; name: string }[] = [];
+
+    if (post._embedded["wp:term"].length > 0) {
+      if (post._embedded["wp:term"][0].length > 0) {
+        if (post._embedded["wp:term"][0][0].taxonomy === "category") {
+          categories = post._embedded["wp:term"][0].map((category: any) => {
+            return {
+              id: category.id,
+              name: category.name,
+            };
+          });
+        }
+      }
+    }
+
+    if (post._embedded["wp:term"].length > 1) {
+      if (post._embedded["wp:term"][1].length > 0) {
+        if (post._embedded["wp:term"][1][0].taxonomy === "post_tag") {
+          tags = post._embedded["wp:term"][1].map((tag: any) => {
+            return {
+              id: tag.id,
+              name: tag.name,
+            };
+          });
+        }
+      }
+    }
 
     return {
       id: post.id,
       title: post.title.rendered,
       content: post.content.rendered,
       publishedAt: post.date_gmt,
-      author: user.name,
-      categories: categories.map((cat: any) => ({
-        id: cat.id,
-        name: cat.name,
-      })),
-      tags: tags.map((tag: any) => ({
-        id: tag.id,
-        name: tag.name,
-      })),
+      author: post._embedded.author[0].name,
+      categories: categories,
+      tags: tags,
       isLiked: false,
       comments: [],
     };
@@ -205,9 +224,14 @@ const fetchUserById = async (id: number) => {
   try {
     const res = await fetch(`${WORDPRESS_API_URL}/users/${id}`, {
       next: { revalidate: REVALIDATE_SECONDS },
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125 Safari/537.36",
+        Accept: "application/json, text/plain, */*",
+      },
     });
 
-    if (!res.ok) throw new Error("Failed to fetch categories by IDs");
+    if (!res.ok) throw new Error("Failed to fetch users by IDs");
 
     return res.json();
   } catch (error) {
