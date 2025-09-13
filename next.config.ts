@@ -1,17 +1,24 @@
 import type { NextConfig } from "next";
 
+const bucketUrl = new URL(process.env.NEXT_PUBLIC_AWS_BUCKET_URL || "");
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
+        protocol: "http",
+        hostname: bucketUrl.hostname,
+        pathname: "/**",
+      },
+      {
         protocol: "https",
-        hostname: "ixziwgisrhzlqiausxnb.supabase.co",
+        hostname: bucketUrl.hostname,
         pathname: "/**",
       },
     ],
   },
   publicRuntimeConfig: {
-    bucketUrl: process.env.NEXT_PUBLIC_AWS_BUCKET_URL,
+    bucketUrl: bucketUrl,
   },
 };
 
