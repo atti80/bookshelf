@@ -15,13 +15,13 @@ const timestamps = {
   updatedAt: timestamp().$onUpdate(() => new Date()),
 };
 
-export const statusType = pgEnum("notificationType", [
+export const articleStatusType = pgEnum("articleStatusType", [
   "draft",
   "published",
   "deleted",
 ]);
 
-export type StatusType = (typeof statusType.enumValues)[number];
+export type ArticleStatusType = (typeof articleStatusType.enumValues)[number];
 
 export const User = pgTable("userTable", {
   id: serial().primaryKey(),
@@ -44,7 +44,7 @@ export const Article = pgTable("articleTable", {
   authorId: integer()
     .notNull()
     .references(() => User.id),
-  status: statusType().notNull().default("draft"),
+  status: articleStatusType().notNull().default("draft"),
   linkUrl: text(),
   image: text().notNull(),
   isFeatured: boolean().default(false),

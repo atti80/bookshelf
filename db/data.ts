@@ -176,7 +176,7 @@ Instead, I had to work for my understanding. It’s a deliberate artistic choice
 Additionally, The Buffalo Hunter Hunter is not an easy read, nor should it be. Some books exist to comfort, to provide escape. This one exists to confront the carnage that history books so often obscure. The sheer amount of blood, brutality, both against people and animals, is staggering, so be mindful of the content warnings. This book doesn’t just shock, it opens up a wound that never really healed. And that's a history we can’t afford to forget, no matter how ugly it gets.
 
 I’m going to have to add SGJ officially to my favourite list of horror writers. Obviously I recommend this one highly. But that recommendation comes with a warning for a gut-wrenching, painful, but necessary read for understanding the true weight of history.`,
-    authorId: 18,
+    authorId: 1,
     image: "buffalo.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 1),
@@ -192,7 +192,7 @@ Margo Everson decides to answer the ad when she sees it being at a place in her 
 The Cookbook Club by Beth Harbison was a book that gained my interest quickly and had me engaged as I wondered what would happen with these three very different characters. As the three ladies came together in the book you learn all about them and different their lives were but in many ways much the same. It was great watching the friendships unfold and the growth of the characters that came in the story as it went on. Of course there is some food talk in the book but it didn’t overpower the character growth or their journeys.
 
 I received an advance copy from the publisher via NetGalley.`,
-    authorId: 19,
+    authorId: 2,
     image: "cookbook.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 2),
@@ -210,7 +210,7 @@ Let me start (not actually, because we’re 4 paragraphs in) by telling you that
 It wasn’t until about half of the book was completed until I realized that the MC is trans. I thought he was beautiful before, but the character got scar tattoos under his pectorals to look like top surgery for “long before” (our time). It was such a beautiful sentiment and I couldn’t feel the joy in it. LOVE LOVE LOVE!!!!!!!!!
 
 I need more books like this in my life!!! If I could give it more stars than 5, I would.`,
-    authorId: 18,
+    authorId: 2,
     image: "bedfellows.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 3),
@@ -236,7 +236,7 @@ When our eyes met, I realized that I should never be jealous of him and the ligh
 Quote
 
 Between the chapters, there are excerpts from reports—or rather, a description of the exploration of the moon Permian for adaptation to human life. I always found that very interesting because Nils Westerboer comes up with really interesting ideas that sound completely absurd: but that's just how it is. We have absolutely no idea how "life" would develop on other planets with different conditions. What exact prerequisites are necessary, what emerges from them, which creatures with which characteristics, talents, or intelligence would emerge.`,
-    authorId: 19,
+    authorId: 2,
     image: "lyneham.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 4),
@@ -252,7 +252,7 @@ this book truly was visceral in every sense of the word cause the anger, disgust
 quote from the authors note that really stuck with me:
 
 “Women have always been cast as caretakers, peacekeepers, and forgivers. We’re told to edure, to adapt, to rise above. But sometimes, the only way to heal is to rage. Sometimes, justice isn’t quiet or clean; it’s feral and bloody and unapologetic.”`,
-    authorId: 18,
+    authorId: 1,
     image: "shygirl.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 5),
@@ -268,7 +268,7 @@ Our bodies, our desires. These soft fleshy vessels—I’m tempted to say that w
 None of it makes sense, because we don’t choose anything and somehow we choose everything. Because our bodies and our desires aren’t ours, not really—they’re something we do with other people, something we make and something we’re given and a series of stupid frustrating questions without answers that only make sense on Tuesday mornings and Friday nights and crack up into our own homegrown youtube oblivion the moment we try—fools that we are—to consider them dispassionately.
 
 And so what choice do we have? We turn to stories. These four are some of the best.`,
-    authorId: 19,
+    authorId: 2,
     image: "stagdance.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 6),
@@ -294,7 +294,7 @@ Speaking of the romance - or lack thereof. These two felt really forced to me. I
 I also thought the Hellbringer's character was poorly constructed. To avoid potential spoilers, I won't go into specifics, but it just didn't feel authentic or likely. He's like the Temu version of Rhys.
 
 To me, this felt like a poor attempt at a mash up of many popular romantasies. If these tropes are your jam though, give it a try - hope that it works better for you. If you're looking for something well written, original and thoroughly entertaining - might give it a pass.`,
-    authorId: 18,
+    authorId: 1,
     image: "bloodbeneath.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 7),
@@ -312,7 +312,7 @@ I also absolutely loved the way the author handled grief, knowing it’s never g
 “Grief is a relationship,” he continues. “It’s the way we figure out how to keep loving them even though they’re gone. And in order to do that we have to keep on going. And going and going.”
 
 “He treats you well?” “Mom, he walked into hell and dragged me back out.”`,
-    authorId: 19,
+    authorId: 1,
     image: "promiseme.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 8),
@@ -324,7 +324,7 @@ I also absolutely loved the way the author handled grief, knowing it’s never g
 The book is grounded in reflections arising out of Chu’s time working and taking classes at the Farminary (the farm at Princeton Theological Seminary), but as Chu counsels in the Author’s Note, he employs a circular rather than a linear mode of storytelling. The writing is exceptional, so it’s never hard to follow; even when the narratives seem fragmented, there’s always a purpose. He pulls in stories of his ancestor’s journeys, his parents’ disapproval of his sexuality, the food and language of his Cantonese American upbringing, his questions about faith and God, and the lessons of compost and little deaths and perpetual grief. Despite the specificity of Chu’s story, this book speaks universally to the human condition; I’m convinced that Chu is the sage that our times require. He does the radical (and highly unpopular) thing of loving one’s enemies with gentle strength and courage, but without compromising his spiritual integrity. And it all comes back to his confidence in God’s boundless love.
 
 A remarkable book that will both heal and challenge you.`,
-    authorId: 18,
+    authorId: 2,
     image: "goodsoil.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 9),
@@ -356,7 +356,7 @@ Gates doesn't shy away from exploring complicated dynamics, particularly with hi
 Technical Detail with Human Interest
 
 While the book contains plenty of technical detail about early programming and computer architecture, Gates maintains accessibility by grounding these elements in human stories and relatable analogies.`,
-    authorId: 19,
+    authorId: 2,
     image: "sourcecode.jpg",
     status: "published",
     publishedAt: new Date(2025, 3, 10),

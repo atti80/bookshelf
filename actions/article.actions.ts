@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
-import { Article, GenreToArticle, Like, StatusType } from "@/db/schema";
+import { Article, GenreToArticle, Like, ArticleStatusType } from "@/db/schema";
 import { and, desc, eq, inArray, ilike, notInArray, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -11,7 +11,7 @@ export interface Result {
 }
 
 export const getArticles = async (
-  status?: StatusType,
+  status?: ArticleStatusType,
   genreId?: number,
   search?: string,
   limit?: number,
@@ -25,7 +25,7 @@ export const getArticles = async (
     content: string;
     createdAt: Date;
     publishedAt: Date | null;
-    status: StatusType;
+    status: ArticleStatusType;
     authorId: number;
     image: string | null;
     author: {

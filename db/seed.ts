@@ -51,6 +51,7 @@ async function seed() {
   // ----------------------------------------------------------
   // ARTICLES
   // ----------------------------------------------------------
+  console.log("adding articles...");
   await db.insert(Article).values(articles);
 
   console.log("Database seeded successfully!");

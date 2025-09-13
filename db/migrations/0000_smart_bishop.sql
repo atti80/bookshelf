@@ -1,11 +1,12 @@
-CREATE TYPE "public"."notificationType" AS ENUM('draft', 'published', 'deleted');--> statement-breakpoint
+CREATE TYPE "public"."articleStatusType" AS ENUM('draft', 'published', 'deleted');--> statement-breakpoint
 CREATE TABLE "articleTable" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
 	"content" text NOT NULL,
 	"authorId" integer NOT NULL,
-	"status" "notificationType" DEFAULT 'draft' NOT NULL,
+	"status" "articleStatusType" DEFAULT 'draft' NOT NULL,
 	"linkUrl" text,
+	"image" text NOT NULL,
 	"isFeatured" boolean DEFAULT false,
 	"publishedAt" timestamp,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
@@ -13,11 +14,11 @@ CREATE TABLE "articleTable" (
 );
 --> statement-breakpoint
 CREATE TABLE "commentTable" (
+	"id" serial PRIMARY KEY NOT NULL,
 	"userId" integer NOT NULL,
 	"articleId" integer NOT NULL,
 	"content" text,
-	"createdAt" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "commentTable_userId_articleId_pk" PRIMARY KEY("userId","articleId")
+	"createdAt" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "genreTable" (
@@ -53,18 +54,20 @@ CREATE TABLE "likeTable" (
 --> statement-breakpoint
 CREATE TABLE "userTable" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"username" text NOT NULL,
 	"email" text NOT NULL,
-	"clerkId" text NOT NULL,
+	"password" text NOT NULL,
+	"salt" text NOT NULL,
 	"name" text,
-	"bio" text,
 	"location" text,
+	"bio" text,
+	"isActive" boolean DEFAULT true,
+	"isAdmin" boolean DEFAULT false,
 	"lastLogin" timestamp,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"updatedAt" timestamp,
-	CONSTRAINT "userTable_username_unique" UNIQUE("username"),
 	CONSTRAINT "userTable_email_unique" UNIQUE("email"),
-	CONSTRAINT "userTable_clerkId_unique" UNIQUE("clerkId")
+	CONSTRAINT "userTable_password_unique" UNIQUE("password"),
+	CONSTRAINT "userTable_salt_unique" UNIQUE("salt")
 );
 --> statement-breakpoint
 ALTER TABLE "articleTable" ADD CONSTRAINT "articleTable_authorId_userTable_id_fk" FOREIGN KEY ("authorId") REFERENCES "public"."userTable"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

@@ -1,5 +1,5 @@
 {
-  "id": "b2ab380a-c57d-40b4-be35-575a12e51aeb",
+  "id": "bd3f4044-78f6-4ed5-ad75-21ffa7a5051c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -34,7 +34,7 @@
         },
         "status": {
           "name": "status",
-          "type": "notificationType",
+          "type": "articleStatusType",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -45,6 +45,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "isFeatured": {
           "name": "isFeatured",
@@ -99,6 +105,12 @@
       "name": "commentTable",
       "schema": "",
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
         "userId": {
           "name": "userId",
           "type": "integer",
@@ -154,15 +166,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "commentTable_userId_articleId_pk": {
-          "name": "commentTable_userId_articleId_pk",
-          "columns": [
-            "userId",
-            "articleId"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
@@ -431,20 +435,20 @@
           "primaryKey": true,
           "notNull": true
         },
-        "username": {
-          "name": "username",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "email": {
           "name": "email",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "clerkId": {
-          "name": "clerkId",
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salt": {
+          "name": "salt",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -455,17 +459,31 @@
           "primaryKey": false,
           "notNull": false
         },
+        "location": {
+          "name": "location",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "bio": {
           "name": "bio",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "location": {
-          "name": "location",
-          "type": "text",
+        "isActive": {
+          "name": "isActive",
+          "type": "boolean",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": true
+        },
+        "isAdmin": {
+          "name": "isAdmin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "lastLogin": {
           "name": "lastLogin",
@@ -491,13 +509,6 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "userTable_username_unique": {
-          "name": "userTable_username_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
-        },
         "userTable_email_unique": {
           "name": "userTable_email_unique",
           "nullsNotDistinct": false,
@@ -505,11 +516,18 @@
             "email"
           ]
         },
-        "userTable_clerkId_unique": {
-          "name": "userTable_clerkId_unique",
+        "userTable_password_unique": {
+          "name": "userTable_password_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "clerkId"
+            "password"
+          ]
+        },
+        "userTable_salt_unique": {
+          "name": "userTable_salt_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "salt"
           ]
         }
       },
@@ -519,8 +537,8 @@
     }
   },
   "enums": {
-    "public.notificationType": {
-      "name": "notificationType",
+    "public.articleStatusType": {
+      "name": "articleStatusType",
       "schema": "public",
       "values": [
         "draft",
