@@ -33,7 +33,9 @@ const AdminListItem = ({
   article: Article;
   userId: number;
 }) => {
-  const imageUrl = `${bucketUrl}/${article.image}`;
+  const imageUrl = bucketUrl
+    ? `${bucketUrl}/${article.image}`
+    : "/images/bookshelf.jpg";
 
   const handlePublishToggle = async () => {
     const prevStatus = article.status;
