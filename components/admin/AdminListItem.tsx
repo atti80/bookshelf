@@ -24,7 +24,14 @@ import {
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 type Article = Articles["articles"][number];
 
-const bucketUrl = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
+function isWebUri(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 const AdminListItem = ({
   article,
@@ -33,9 +40,10 @@ const AdminListItem = ({
   article: Article;
   userId: number;
 }) => {
-  const imageUrl = bucketUrl
-    ? `${bucketUrl}/${article.image}`
-    : "/images/bookshelf.jpg";
+  const imageUrl =
+    article.image && isWebUri(article.image)
+      ? article.image
+      : "/images/bookshelf.jpg";
 
   const handlePublishToggle = async () => {
     const prevStatus = article.status;

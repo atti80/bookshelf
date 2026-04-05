@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         hostname: bucketUrl.hostname,
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "wt2lrff8wp.ufs.sh",
+        pathname: "/**",
+      },
     ],
   },
   publicRuntimeConfig: {

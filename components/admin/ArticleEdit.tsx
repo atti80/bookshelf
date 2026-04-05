@@ -23,13 +23,21 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { uploadImage } from "@/actions/image.actions";
 import { GenreMultiSelect } from "./GenreMultiSelect";
+import { UploadButton } from "@/lib/uploadthing";
 
-const BUCKET_URL = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
 type Article = Awaited<ReturnType<typeof getArticle>>;
+
+function isWebUri(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 const ArticleEdit = ({
   userId,
@@ -39,10 +47,10 @@ const ArticleEdit = ({
   article?: Article;
 }) => {
   const router = useRouter();
-  const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState(
-    article ? `${BUCKET_URL}/${article.image}` : ""
+    article?.image && isWebUri(article.image) ? article.image : ""
   );
+  const [uploadMessage, setUploadMessage] = useState("");
 
   const form = useForm<z.infer<typeof articleSchema>>({
     resolver: zodResolver(articleSchema),
@@ -57,49 +65,28 @@ const ArticleEdit = ({
     },
   });
 
-  async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  }
-
   async function onSubmit(values: z.infer<typeof articleSchema>) {
-    if (!article && !file) {
+    if (!article && !previewUrl) {
       form.setError("image", { message: "Image is missing" });
-      return;
-    }
-    if (file && file.size > 1024 * 1024) {
-      form.setError("image", { message: "Image size must be less than 1MB" });
       return;
     }
 
     let result: Result = { success: false };
-    if (file) {
-      result = await uploadImage(file);
-      if (result.success) toast.success("Image uploaded successfully");
-      else toast.error(result.error);
-    }
 
     if (article)
       result = await updateArticle(
         article.id,
         values.title,
         values.content,
-        file ? file.name : article.image,
+        previewUrl ?? article.image,
         values.genres.map((genre) => genre.id)
       );
-    else if (file)
+    else if (previewUrl)
       result = await createArticle(
         userId,
         values.title,
         values.content,
-        file.name,
+        previewUrl,
         values.genres.map((genre) => genre.id)
       );
 
@@ -111,11 +98,6 @@ const ArticleEdit = ({
 
   const handleCancel = () => {
     router.push("/admin");
-  };
-
-  const handleDeleteImage = () => {
-    setFile(null);
-    setPreviewUrl("");
   };
 
   const genres = form.watch("genres");
@@ -181,13 +163,7 @@ const ArticleEdit = ({
                 <FormLabel>Image</FormLabel>
                 <FormControl>
                   <div>
-                    <Input
-                      type="file"
-                      {...field}
-                      onChange={handleFileChange}
-                      accept="image/*"
-                    />
-                    <div className="flex gap-4 mt-2">
+                    <div className="flex items-start gap-4 mt-2">
                       <div className="relative w-[200px] h-[200px] border-foreground border-[1px] rounded-sm overflow-hidden">
                         {previewUrl && (
                           <Image
@@ -197,6 +173,35 @@ const ArticleEdit = ({
                             objectFit="contain"
                           ></Image>
                         )}
+                      </div>
+                      <div className="flex flex-col items-start gap-2">
+                        <UploadButton
+                          content={{
+                            button({ isUploading }) {
+                              if (isUploading) return "Uploading...";
+                              return "Choose Image";
+                            },
+                          }}
+                          appearance={{
+                            button:
+                              "px-4 py-2 border hover:bg-accent hover:text-accent-foreground",
+                          }}
+                          endpoint="postImage"
+                          onClientUploadComplete={(res) => {
+                            if (res && res.length > 0) {
+                              const imageUrl = res[0].ufsUrl;
+                              setPreviewUrl(imageUrl);
+                              setUploadMessage(`Image uploaded successfully`);
+                            }
+                          }}
+                          onUploadError={(error: Error) => {
+                            setUploadMessage(
+                              "Upload failed. Please try again."
+                            );
+                            alert(`ERROR! ${error.message}`);
+                          }}
+                        />
+                        <span>{uploadMessage}</span>
                       </div>
                     </div>
                   </div>

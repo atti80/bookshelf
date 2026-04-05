@@ -5,7 +5,7 @@ import Image from "next/image";
 import Genres from "./Genres";
 import ReadMore from "./ReadMore";
 import { useEffect, useState, useRef } from "react";
-import { HeartIcon, MessageCircleIcon } from "lucide-react";
+import { HeartIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { format } from "date-fns";
 import { ReadMoreHandle } from "./ReadMore";
@@ -14,7 +14,14 @@ import Link from "next/link";
 type Articles = Awaited<ReturnType<typeof getArticles>>;
 type Article = Articles["articles"][number];
 
-const BUCKET_URL = process.env.NEXT_PUBLIC_AWS_BUCKET_URL;
+function isWebUri(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 const Article = ({
   article,
@@ -34,7 +41,9 @@ const Article = ({
   const [optimisticLikes, setOptmisticLikes] = useState(article.likes.length);
 
   useEffect(() => {
-    if (BUCKET_URL) setImageUrl(`${BUCKET_URL}/${article.image}`);
+    if (article.image && isWebUri(article.image)) {
+      setImageUrl(article.image);
+    }
   }, []);
 
   const handleLike = async () => {
